@@ -7,6 +7,7 @@ const {query} = require("./utils/db");
 const port = 3001
 const compression = require('compression')
 const helmet = require('helmet')
+const _fetch = require('node-fetch');
 
 app.use(compression())
 app.use(helmet())
@@ -79,6 +80,50 @@ app.post('/api/updateSequence', (((req, res) => {
     const items : itemSequence[] = req.body.items;
     items.forEach((item) => {query(`UPDATE shopping_list SET sequence = ? WHERE id = ?`, [item.sequence, item.id])})
     res.json({success: true})
+})))
+
+app.get('/api/deleteAllItems', (((req, res) => {
+    query(`DELETE * FROM shopping_list`).then(res.json({success: true}));
+})))
+
+interface searchItem {
+    name: string,
+    link: string,
+    img: string,
+    amount: string,
+    price: string
+}
+
+app.post('/api/search', (((req, res) => {
+    _fetch(`https://ah.nl/zoeken?query=${req.body.query}&PageSpeed=noscript`).then(result => result.text().then(result => {
+        const pattern_script = /window\.__INITIAL_STATE__= (.*?)\n {2}window.initialViewport='DESKTOP'\n/gs;
+        const pattern_undefined = /undefined/g;
+
+        const match = pattern_script.exec(result)
+        const filtered_match = match[1].replace(pattern_undefined, null);
+
+        const initial_state = JSON.parse(filtered_match);
+
+        const itemsArray: object[] = []
+
+        initial_state["search"]["results"].filter(item => item.type == 'default').forEach(topItem => {
+            let item = topItem.products[0]
+            let obj: searchItem = {} as searchItem;
+
+            obj.name = item.title;
+            obj.link = 'https://ah.nl' + item.link;
+            obj.img = item.images[0].url;
+            obj.amount = item.price.unitSize;
+            obj.price = item.price.now;
+            itemsArray.push(obj);
+        });
+
+        res.json({result: itemsArray});
+    }));
+
+
+
+
 })))
 
 app.listen(port, () => {
