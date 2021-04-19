@@ -91,7 +91,8 @@ interface searchItem {
     link: string,
     img: string,
     amount: string,
-    price: string
+    price: string,
+    id: string
 }
 
 app.post('/api/search', (((req, res) => {
@@ -112,14 +113,15 @@ app.post('/api/search', (((req, res) => {
 
             obj.name = item.title;
             obj.link = 'https://ah.nl' + item.link;
-            obj.img = item.images[0].url;
+            obj.img = item.images ? item.images[0].url : null;
             obj.amount = item.price.unitSize;
             obj.price = item.price.now;
+            obj.id = item.id;
             itemsArray.push(obj);
         });
 
         res.json({result: itemsArray});
-    }));
+    })).catch(e => res.json({success: false, exception: e}));
 
 
 
