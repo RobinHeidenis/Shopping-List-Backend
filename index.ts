@@ -113,7 +113,7 @@ app.post('/api/search', (((req, res) => {
 
             obj.name = item.title;
             obj.link = 'https://ah.nl' + item.link;
-            obj.img = item.images ? item.images[0].url : null;
+            obj.img = item.images && item.images[0] ? item.images[0].url : 'https://www.ah.nl/zoeken/assets/341efdfa.svg';
             obj.amount = item.price.unitSize;
             obj.price = item.price.now;
             obj.id = item.id;
@@ -121,7 +121,7 @@ app.post('/api/search', (((req, res) => {
         });
 
         res.json({result: itemsArray});
-    })).catch(e => res.json({success: false, exception: e}));
+    }));
 
 
 
