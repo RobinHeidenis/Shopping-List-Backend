@@ -12,7 +12,7 @@ const _fetch = require('node-fetch');
 app.use(compression())
 app.use(helmet())
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({extended: true}))
 
 app.use(cors())
 
@@ -28,12 +28,18 @@ app.get('/api/getItemList', (req, res) => {
 })
 
 app.post('/api/updateItemStatus', (req, res) => {
-    if (req.body.status < 0 || req.body.status > 1 || req.body.id.isNaN) {res.error(); return;}
+    if (req.body.status < 0 || req.body.status > 1 || req.body.id.isNaN) {
+        res.error();
+        return;
+    }
     query(`UPDATE shopping_list SET status = ? WHERE id = ?`, [req.body.status, req.body.id]).then(res.json({success: true})).catch(reason => console.log(reason))
 })
 
 app.post('/api/deleteItem', (req, res) => {
-    if (req.body.id.isNaN) {res.error(); return;}
+    if (req.body.id.isNaN) {
+        res.error();
+        return;
+    }
     query(`DELETE FROM shopping_list WHERE id = ?`, [req.body.id]).then(res.json({success: true})).catch(reason => console.log(reason));
 })
 
@@ -64,27 +70,32 @@ interface insertQueryResult {
     changedRows: number
 }
 
-app.post('/api/addItem', ((req, res) => {
+app.post('/api/addItem', (req, res) => {
     const item: item = req.body.item;
     query(`SELECT count(*) FROM shopping_list`).then((result) => query(`INSERT INTO shopping_list (name, quantity, url, sequence) VALUES (?, ?, ?, ?)`, [item.name, item.quantity, item.url, result[0][Object.keys(result[0])[0]]])
-        .then((result: insertQueryResult) => query(`SELECT * FROM shopping_list WHERE id = ?`, [result.insertId]).then((result) => res.json({success: true, item: result}))))
+        .then((result: insertQueryResult) => query(`SELECT * FROM shopping_list WHERE id = ?`, [result.insertId]).then((result) => res.json({
+            success: true,
+            item: result
+        }))))
 
-}))
+})
 
-app.post('/api/updateItem', ((req, res) => {
+app.post('/api/updateItem', (req, res) => {
     const item: fullItem = req.body.item;
     query(`UPDATE shopping_list SET name = ?, quantity = ?, url = ? WHERE id = ?`, [item.name, item.quantity, item.url, item.id]).then(() => res.json({success: true}))
-}))
+})
 
-app.post('/api/updateSequence', (((req, res) => {
-    const items : itemSequence[] = req.body.items;
-    items.forEach((item) => {query(`UPDATE shopping_list SET sequence = ? WHERE id = ?`, [item.sequence, item.id])})
+app.post('/api/updateSequence', (req, res) => {
+    const items: itemSequence[] = req.body.items;
+    items.forEach((item) => {
+        query(`UPDATE shopping_list SET sequence = ? WHERE id = ?`, [item.sequence, item.id])
+    })
     res.json({success: true})
-})))
+})
 
-app.get('/api/deleteAllItems', (((req, res) => {
+app.get('/api/deleteAllItems', (req, res) => {
     query(`DELETE * FROM shopping_list`).then(res.json({success: true}));
-})))
+})
 
 interface searchItem {
     name: string,
@@ -95,7 +106,7 @@ interface searchItem {
     id: string
 }
 
-app.post('/api/search', (((req, res) => {
+app.post('/api/search', (req, res) => {
     _fetch(`https://ah.nl/zoeken?query=${req.body.query}&PageSpeed=noscript`).then(result => result.text().then(result => {
         const pattern_script = /window\.__INITIAL_STATE__= (.*?)\n {2}window.initialViewport='DESKTOP'\n/gs;
         const pattern_undefined = /undefined/g;
@@ -122,11 +133,31 @@ app.post('/api/search', (((req, res) => {
 
         res.json({result: itemsArray});
     }));
+});
 
+app.get('/api/getStandardItems', (req, res) => {
+    query('SELECT * from shopping_list_standard').then((results) => {
+        const items = {items: results};
+        res.json(items);
+    }).catch(reason => console.log(reason))
+})
 
+app.post('/api/addStandardItem', (req, res) => {
+    const item: item = req.body.item;
+    query(`INSERT INTO shopping_list_standard (name, quantity, url) VALUES (?, ?, ?)`, [item.name, item.quantity, item.url])
+        .then((result: insertQueryResult) => query(`SELECT * FROM shopping_list_standard WHERE id = ?`, [result.insertId]).then((result) => res.json({
+            success: true,
+            item: result
+        })))
+})
 
-
-})))
+app.post('/api/deleteStandardItem', (req, res) => {
+    if (req.body.id.isNaN) {
+        res.error();
+        return;
+    }
+    query(`DELETE FROM shopping_list_standard WHERE id = ?`, [req.body.id]).then(res.json({success: true})).catch(reason => console.log(reason));
+})
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
