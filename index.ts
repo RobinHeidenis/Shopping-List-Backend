@@ -94,7 +94,7 @@ app.post('/api/updateSequence', (req, res) => {
 })
 
 app.get('/api/deleteAllItems', (req, res) => {
-    query(`DELETE * FROM shopping_list`).then(res.json({success: true}));
+    query(`DELETE FROM shopping_list`).then(res.json({success: true}));
 })
 
 interface searchItem {
