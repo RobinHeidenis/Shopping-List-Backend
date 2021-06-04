@@ -8,8 +8,8 @@ const db: ServerlessMysql = require("serverless-mysql")({
         database: process.env.DB_NAME,
         user: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
-        host: process.env.DB_IP,
-    },
+        host: process.env.DB_IP
+    }
 });
 
 export const query = async (q: string, values: any[]) => {
