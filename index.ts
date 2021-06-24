@@ -8,11 +8,16 @@ const compression = require("compression");
 const helmet = require("helmet");
 const _fetch = require("node-fetch");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
+const SSE = require("express-sse");
 
 app.use(compression());
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+
+const sse = new SSE();
 
 const authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -33,17 +38,22 @@ const authenticateJWT = (req, res, next) => {
     }
 };
 
+app.get("/events", sse.init);
+
 app.post("/api/login", (req, res) => {
     _fetch("http://localhost:3002/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username: req.body.username, password: req.body.password })
+        body: JSON.stringify({
+            username: req.body.username,
+            password: req.body.password
+        })
     }).then((r) => r.json().then(r => res.json(r)));
 });
 
-app.get("/api/getItemList", authenticateJWT, (req, res) => {
+app.get("/api/getItemList", (req, res) => {
     query("SELECT * from shopping_list").then((results) => {
         const items = { items: results };
         res.json(items);
@@ -55,7 +65,13 @@ app.post("/api/updateItemStatus", authenticateJWT, (req, res) => {
         res.error();
         return;
     }
-    query("UPDATE shopping_list SET status = ? WHERE id = ?", [req.body.status, req.body.id]).then(res.json({ success: true })).catch(reason => console.log(reason));
+    query("UPDATE shopping_list SET status = ? WHERE id = ?", [req.body.status, req.body.id]).then(() => {
+        res.json({ success: true });
+        sse.send({
+            id: req.body.id,
+            status: req.body.status
+        }, "updateItemStatus");
+    }).catch(reason => console.log(reason));
 });
 
 app.post("/api/deleteItem", authenticateJWT, (req, res) => {
@@ -63,7 +79,12 @@ app.post("/api/deleteItem", authenticateJWT, (req, res) => {
         res.error();
         return;
     }
-    query("DELETE FROM shopping_list WHERE id = ?", [req.body.id]).then(res.json({ success: true })).catch(reason => console.log(reason));
+    query("DELETE FROM shopping_list WHERE id = ?", [req.body.id]).then(() => {
+        res.json({ success: true });
+        sse.send({
+            id: req.body.id
+        }, "deleteItem");
+    }).catch(reason => console.log(reason));
 });
 
 interface item {
@@ -96,27 +117,44 @@ interface insertQueryResult {
 app.post("/api/addItem", authenticateJWT, (req, res) => {
     const item: item = req.body.item;
     query("SELECT count(*) FROM shopping_list").then((result) => query("INSERT INTO shopping_list (name, quantity, url, sequence) VALUES (?, ?, ?, ?)", [item.name, item.quantity, item.url, result[0][Object.keys(result[0])[0]]])
-        .then((result: insertQueryResult) => query("SELECT * FROM shopping_list WHERE id = ?", [result.insertId]).then((result) => res.json({
-            success: true,
-            item: result
-        }))));
+        .then((result: insertQueryResult) => query("SELECT * FROM shopping_list WHERE id = ?", [result.insertId]).then((result) => {
+            res.json({
+                success: true,
+                item: result
+            });
+            sse.send(result, "addItem");
+        })));
 });
 
 app.post("/api/updateItem", authenticateJWT, (req, res) => {
     const item: fullItem = req.body.item;
-    query("UPDATE shopping_list SET name = ?, quantity = ?, url = ? WHERE id = ?", [item.name, item.quantity, item.url, item.id]).then(() => res.json({ success: true }));
+    query("UPDATE shopping_list SET name = ?, quantity = ?, url = ? WHERE id = ?", [item.name, item.quantity, item.url, item.id]).then(() => {
+        res.json({ success: true });
+        sse.send({
+            id: item.id,
+            quantity: item.quantity,
+            url: item.url,
+            name: item.name
+        }, "updateItem");
+    });
 });
 
 app.post("/api/updateSequence", authenticateJWT, (req, res) => {
     const items: itemSequence[] = req.body.items;
     items.forEach((item) => {
-        query("UPDATE shopping_list SET sequence = ? WHERE id = ?", [item.sequence, item.id]);
+        query("UPDATE shopping_list SET sequence = ? WHERE id = ?", [item.sequence, item.id]).catch(() => {
+            res.json({ success: false });
+        });
     });
     res.json({ success: true });
+    sse.send(items, "updateItemSequence");
 });
 
 app.get("/api/deleteAllItems", authenticateJWT, (req, res) => {
-    query("DELETE FROM shopping_list").then(res.json({ success: true }));
+    query("DELETE FROM shopping_list").then(() => {
+        res.json({ success: true });
+        sse.send("", "deleteAllItems");
+    });
 });
 
 interface searchItem {

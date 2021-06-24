@@ -1,7 +1,7 @@
 export default interface item {
-    name: string,
-    quantity?: string,
-    url?: string,
+    name: string
+    quantity?: string
+    url?: string
 };;;;;;;;;;
 
 export interface fullItem extends item {

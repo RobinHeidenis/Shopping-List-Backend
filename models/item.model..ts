@@ -1,5 +1,4 @@
 import item, { fullItem } from "../interfaces/item.interface";
-import * as serverlessMysql from "serverless-mysql";
 
 const { query } = require("../utils/db");
 

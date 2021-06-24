@@ -18,6 +18,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
+    "express-sse": "^0.5.3",
     "helmet": "^4.4.1",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
