@@ -1,3 +1,6 @@
+import { category, insertQueryResult, searchItem } from "./interfaces";
+import { item, fullItem, itemSequence } from "./interfaces/item.interface";
+
 const express = require("express");
 require("dotenv").config();
 const app = express();
@@ -10,12 +13,14 @@ const _fetch = require("node-fetch");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const SSE = require("express-sse");
+const cookieParser = require("cookie-parser");
 
 app.use(compression());
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieParser());
 
 const sse = new SSE();
 
@@ -27,14 +32,21 @@ const authenticateJWT = (req, res, next) => {
 
         jwt.verify(token, process.env.accessTokenSecret, (err, user) => {
             if (err) {
-                return res.sendStatus(403);
+                console.log(err);
+                return res.status(403).send({
+                    error: true,
+                    message: "Unauthorized"
+                });
             }
 
             req.user = user;
             next();
         });
     } else {
-        res.sendStatus(401);
+        res.status(400).send({
+            error: true,
+            message: "Bad Request"
+        });
     }
 };
 
@@ -53,8 +65,41 @@ app.post("/api/login", (req, res) => {
     }).then((r) => r.json().then(r => res.json(r)));
 });
 
-app.get("/api/getItemList", (req, res) => {
-    query("SELECT * from shopping_list").then((results) => {
+app.get("/api/getCategories", (req, res) => {
+    query("SELECT * FROM shopping_list_categories").then((results) => {
+        const items = { categories: results };
+        res.json(items);
+    }).catch(reason => console.log(reason));
+});
+
+app.post("/api/addCategory", (req, res) => {
+    const category: category = req.body.item;
+    query("INSERT INTO shopping_list_categories (name, color) VALUES (?, ?)", [category.name, category.color])
+        .then((result: insertQueryResult) => query("SELECT * FROM shopping_list WHERE id = ?", [result.insertId]).then((result) => {
+            res.json({
+                success: true,
+                item: result
+            });
+            sse.send(result, "addCategory");
+        }));
+});
+
+app.post("/api/deleteCategory", (req, res) => {
+    if (req.body.id.isNaN) {
+        res.error();
+        return;
+    }
+    query("DELETE FROM shopping_list_categories WHERE id = ?", [req.body.id]).then(() => {
+        res.json({ success: true });
+        sse.send({
+            id: req.body.id
+        }, "deleteCategory");
+    }).catch(reason => console.log(reason));
+});
+
+app.get("/api/getItemList", authenticateJWT, (req, res) => {
+    query("SELECT l.id, l.name, l.quantity, l.url, l.status, l.sequence, l.category, c.name as category_name, c.id as category_id, c.color as category_color FROM shopping_list as l JOIN shopping_list_categories as c ON l.category = c.id").then((results) => {
+        // TODO: get the category ids from the items and add the category info there
         const items = { items: results };
         res.json(items);
     }).catch(reason => console.log(reason));
@@ -86,33 +131,6 @@ app.post("/api/deleteItem", authenticateJWT, (req, res) => {
         }, "deleteItem");
     }).catch(reason => console.log(reason));
 });
-
-interface item {
-    name: string,
-    quantity?: string,
-    url?: string,
-}
-
-interface fullItem extends item {
-    id: number,
-    status: number
-}
-
-interface itemSequence {
-    id: number,
-    sequence: number
-}
-
-interface insertQueryResult {
-    fieldcount: number,
-    affectedRows: number,
-    insertId: number,
-    serverStatus: number,
-    warningCount: number,
-    message: string,
-    protocol41: boolean,
-    changedRows: number
-}
 
 app.post("/api/addItem", authenticateJWT, (req, res) => {
     const item: item = req.body.item;
@@ -156,15 +174,6 @@ app.get("/api/deleteAllItems", authenticateJWT, (req, res) => {
         sse.send("", "deleteAllItems");
     });
 });
-
-interface searchItem {
-    name: string,
-    link: string,
-    img: string,
-    amount: string,
-    price: string,
-    id: string
-}
 
 app.post("/api/search", authenticateJWT, (req, res) => {
     _fetch(`https://ah.nl/zoeken?query=${req.body.query}&PageSpeed=noscript`).then(result => result.text().then(result => {
@@ -217,6 +226,19 @@ app.post("/api/deleteStandardItem", authenticateJWT, (req, res) => {
         return;
     }
     query("DELETE FROM shopping_list_standard WHERE id = ?", [req.body.id]).then(res.json({ success: true })).catch(reason => console.log(reason));
+});
+
+app.get("*", (req, res) => {
+    res.status("404").send({
+        error: true,
+        message: "not found"
+    });
+});
+app.post("*", (req, res) => {
+    res.status("404").send({
+        error: true,
+        message: "not found"
+    });
 });
 
 app.listen(port, () => {
