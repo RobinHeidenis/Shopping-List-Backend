@@ -24,13 +24,13 @@ app.use(cors());
 app.use(cookieParser());
 
 const categoryRouter = createRoutes('../controllers/category.controller');
-// const itemRouter = createRoutes('../controllers/item.controller');
-// const standardItemRouter = createRoutes('../controllers/standardItem.controller');
+const itemRouter = createRoutes('../controllers/item.controller');
+const standardItemRouter = createRoutes('../controllers/standardItem.controller');
 
 // TODO: incorporate the old api in here, so no breaking changes are forced yet
-// app.use('/api/v2/item', itemRouter);
+app.use('/api/v2/item', itemRouter);
 app.use('/api/v2/category', categoryRouter);
-// app.use('/api/v2/standardItem', standardItemRouter);
+app.use('/api/v2/standardItem', standardItemRouter);
 
 app.listen(PORT, () => {
   sequelize.sync({force: true})
