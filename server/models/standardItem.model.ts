@@ -5,13 +5,13 @@ import {
   Default,
   ForeignKey,
   Model,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { Category } from './category.model';
 import {
   StandardItemAttributes,
-  StandardItemsCreationAttributes
+  StandardItemsCreationAttributes,
 } from '../types/standardItem.type';
 
 @Table

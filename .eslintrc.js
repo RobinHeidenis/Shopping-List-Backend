@@ -15,5 +15,8 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
+    'import/prefer-default-export': 0,
+    'import/no-unresolved': 0,
+    radix: 0,
   },
 };

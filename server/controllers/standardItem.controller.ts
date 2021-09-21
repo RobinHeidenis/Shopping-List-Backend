@@ -1,19 +1,83 @@
+import { handleDatabaseException } from '../exceptions/database.exception';
+import { StandardItem } from '../models/standardItem.model';
+import { handleBadRequestException } from '../exceptions/badRequest.exception';
+import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
+
 exports.createOneRequest = async (req, res) => {
-  // TODO: implement method
-  res.sendStatus(501);
+  const {
+    name,
+    quantity,
+    url,
+    categoryId,
+  } = req.body;
+  // TODO: check if category exists, also do this with item.controller.ts
+
+  StandardItem.create({
+    name, quantity, url, categoryId,
+  })
+    .then((item) => res.status(201).json(item))
+    .catch((e) => handleDatabaseException(e, res));
 };
 
 exports.readOneRequest = async (req, res) => {
-  // TODO: implement method
-  res.sendStatus(501);
+  const { id } = req.params;
+
+  if (!id || !parseInt(id)) {
+    handleBadRequestException(res);
+    return;
+  }
+
+  const foundStandardItem = await StandardItem.findByPk(id)
+    .catch((e) => handleDatabaseException(e, res));
+
+  if (foundStandardItem) {
+    res.status(200).json(foundStandardItem);
+  } else {
+    handleRecordNotFoundException(res);
+  }
 };
 
 exports.updateOneRequest = async (req, res) => {
-  // TODO: implement method
-  res.sendStatus(501);
+  const { id } = req.params;
+  const {
+    name, quantity, url,
+  } = req.body;
+
+  if (!id || !parseInt(id)) {
+    handleBadRequestException(res);
+    return;
+  }
+
+  const foundStandardItem = await StandardItem.findByPk(id)
+    .catch((e) => handleDatabaseException(e, res));
+
+  if (foundStandardItem) {
+    const standardItem = await foundStandardItem.update({
+      name, quantity, url,
+    });
+
+    res.status(200).json(standardItem);
+  } else {
+    handleRecordNotFoundException(res);
+  }
 };
 
 exports.deleteOneRequest = async (req, res) => {
-  // TODO: implement method
-  res.sendStatus(501);
+  const { id } = req.params;
+
+  if (!id || !parseInt(id)) {
+    handleBadRequestException(res);
+    return;
+  }
+
+  const foundStandardItem = await StandardItem.findByPk(id)
+    .catch((e) => handleDatabaseException(e, res));
+
+  if (foundStandardItem) {
+    foundStandardItem.destroy()
+      .then(() => res.sendStatus(204))
+      .catch((e) => handleDatabaseException(e, res));
+  } else {
+    handleRecordNotFoundException(res);
+  }
 };

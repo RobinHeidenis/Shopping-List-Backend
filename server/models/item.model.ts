@@ -5,10 +5,10 @@ import {
   Default,
   ForeignKey,
   Model,
-  Table
+  Table,
 } from 'sequelize-typescript';
-import { ItemAttributes, ItemCreationAttributes } from '../types/item.type';
 import { DataTypes } from 'sequelize';
+import { ItemAttributes, ItemCreationAttributes } from '../types/item.type';
 import { Category } from './category.model';
 
 @Table

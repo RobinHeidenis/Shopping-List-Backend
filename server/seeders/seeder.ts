@@ -9,5 +9,5 @@ const seeders: seeder[] = [
 ];
 
 export function seedDatabase() {
-  seeders.forEach((seeder) => seeder.seed())
+  seeders.forEach((seeder) => seeder.seed());
 }
