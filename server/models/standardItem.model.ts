@@ -1,17 +1,38 @@
-import { sequelize } from "../db";
-import { DataTypes } from "sequelize";
-export const StandardItem = sequelize.define("StandardItem", {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-    },
-    name: {
-        type: DataTypes.STRING(255),
-        allowNull: false
-    },
-    quantity: {
-        type: DataTypes.STRING(15),
-        defaultValue: null
-    }
-});
+import {
+  AllowNull,
+  BelongsTo,
+  Column,
+  Default,
+  ForeignKey,
+  Model,
+  Table
+} from 'sequelize-typescript';
+import { DataTypes } from 'sequelize';
+import { Category } from './category.model';
+import {
+  StandardItemAttributes,
+  StandardItemsCreationAttributes
+} from '../types/standardItem.type';
+
+@Table
+export class StandardItem extends Model<StandardItemAttributes, StandardItemsCreationAttributes> {
+  @AllowNull(false)
+  @Column
+  name: string
+
+  @AllowNull
+  @Column(DataTypes.STRING(15))
+  quantity: string
+
+  @AllowNull
+  @Column(DataTypes.STRING(500))
+  url: string
+
+  @Default(1)
+  @ForeignKey(() => Category)
+  @Column
+  categoryId: number
+
+  @BelongsTo(() => Category)
+  category: Category
+}
