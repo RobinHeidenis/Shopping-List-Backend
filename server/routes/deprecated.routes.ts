@@ -5,11 +5,13 @@ import { query } from '../../utils/db';
 
 require('dotenv').config();
 const express = require('express');
+
 const urlRoutes = express.Router();
 const jwt = require('jsonwebtoken');
 const _fetch = require('node-fetch');
 
 const SSE = require('express-sse');
+
 const sse = new SSE();
 
 const authenticateJWT = (req, res, next) => {
@@ -216,4 +218,4 @@ urlRoutes.post('/api/deleteStandardItem', authenticateJWT, (req, res) => {
   query('DELETE FROM shopping_list_standard WHERE id = ?', [req.body.id]).then(res.json({ success: true })).catch((reason) => console.log(reason));
 });
 
-module.exports = urlRoutes
+module.exports = urlRoutes;

@@ -5,11 +5,11 @@ export class categorySeeder implements seeder {
   seed() {
     Category.create({
       name: 'Albert Heijn',
-      color: '#179EDA'
+      color: '#179EDA',
     });
     Category.create({
       name: 'Snackbar',
-      color: 'yellow'
+      color: 'yellow',
     });
   }
 }

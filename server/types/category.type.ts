@@ -6,6 +6,5 @@ export interface CategoryAttributes {
   color: string;
 }
 
-
 export interface CategoryCreationAttributes
-  extends Optional<CategoryAttributes, "id"> {}
+  extends Optional<CategoryAttributes, 'id'> {}

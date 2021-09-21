@@ -8,11 +8,11 @@ exports.createOneRequest = async (req, res) => {
     name,
     quantity,
     url,
-    category,
+    categoryId,
   } = req.body;
 
   Item.create({
-    name, quantity, url, sequence: await Item.max('sequence') as number + 1, category,
+    name, quantity, url, sequence: await Item.max('sequence') as number + 1, categoryId,
   })
     .then((item) => res.status(201).json(item))
     .catch((e) => handleDatabaseException(e, res));

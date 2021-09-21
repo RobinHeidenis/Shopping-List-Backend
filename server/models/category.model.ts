@@ -1,6 +1,8 @@
-import { CategoryAttributes, CategoryCreationAttributes, } from '../types/category.type';
-import { Column, HasMany, Model, Table } from 'sequelize-typescript';
+import {
+  Column, HasMany, Model, Table,
+} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
+import { CategoryAttributes, CategoryCreationAttributes } from '../types/category.type';
 import { Item } from './item.model';
 import { StandardItem } from './standardItem.model';
 
