@@ -1,19 +1,16 @@
 import { sequelize } from './db';
 import { createRoutes } from './routes/routeCreator.routes';
 import { seedDatabase } from './seeders/seeder';
+import { Category } from './models/category.model';
 
 require('dotenv').config();
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const { query } = require('../utils/db');
 const PORT = 3001;
 const compression = require('compression');
 const helmet = require('helmet');
-const _fetch = require('node-fetch');
-const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const SSE = require('express-sse');
 const cookieParser = require('cookie-parser');
 
 app.use(compression());
@@ -27,18 +24,34 @@ const categoryRouter = createRoutes('../controllers/category.controller');
 const itemRouter = createRoutes('../controllers/item.controller');
 const standardItemRouter = createRoutes('../controllers/standardItem.controller');
 
-// TODO: incorporate the old api in here, so no breaking changes are forced yet
+const deprecatedRoutesRouter = require('./routes/deprecated.routes');
+
+//TODO: incorporate the old api in here, so no breaking changes are forced yet
 app.use('/api/v2/item', itemRouter);
 app.use('/api/v2/category', categoryRouter);
 app.use('/api/v2/standardItem', standardItemRouter);
+app.use('', deprecatedRoutesRouter);
 
-app.listen(PORT, () => {
-  sequelize.sync({force: true})
-    .then(() => console.log('All models were synchronized successfully.'))
-    .then(() => {
-      console.log('Seeding database');
-      seedDatabase()
-    })
-    .catch((e) => { console.log(e); });
+//TODO: beautify logging
+
+app.listen(PORT, async () => {
   console.log(`Shopping list backend listening at http://localhost:${PORT}`);
+
+  if(await Category.count() === 0) {
+    sequelize.sync({ force: true })
+      .then(() => console.log('All models were synchronized successfully.'))
+      .then(() => {
+        console.log('Seeding database');
+        seedDatabase()
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  } else {
+    sequelize.sync()
+      .then(() => console.log('All models were synchronized successfully.'))
+      .catch((e) => {
+        console.log(e);
+      });
+  }
 });

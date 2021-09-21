@@ -1,14 +1,16 @@
 import { ServerlessMysql } from 'serverless-mysql';
 
+require('dotenv').config();
+
 const db: ServerlessMysql = require('serverless-mysql')({
   backoff: 'decorrelated',
   base: 5,
   cap: 200,
   config: {
-    database: process.env.DB_NAME,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_IP,
+    database: process.env.DB_NAME_OLD,
+    user: process.env.DB_USERNAME_OLD,
+    password: process.env.DB_PASSWORD_OLD,
+    host: process.env.DB_IP_OLD,
   },
 });
 
