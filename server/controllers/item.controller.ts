@@ -1,4 +1,4 @@
-import { Item } from '../../temp/item.model';
+import { Item } from '../models/item.model';
 import { handleDatabaseException } from '../exceptions/database.exception';
 import { handleBadRequestException } from '../exceptions/badRequest.exception';
 import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
