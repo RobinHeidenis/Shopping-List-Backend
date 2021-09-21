@@ -1,13 +1,13 @@
 {
   "name": "shopping-list-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend for the shopping list frontend. To be used with the auth server",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node-dev server/index.ts"
   },
-  "author": "",
+  "author": "Robin Heidenis",
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.11",
