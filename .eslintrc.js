@@ -18,5 +18,6 @@ module.exports = {
     'import/prefer-default-export': 0,
     'import/no-unresolved': 0,
     radix: 0,
+    'linebreak-style': 'off',
   },
 };
