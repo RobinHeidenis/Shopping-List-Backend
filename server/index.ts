@@ -5,9 +5,10 @@ import { Item } from "./models/item.model";
 import { StandardItem } from "./models/standardItem.model";
 import { Category } from "./models/category.model";
 import { logger } from "sequelize/types/lib/utils/logger";
+import { createRoutes } from "./routes/routeCreator.routes";
 
-const express = require("express");
 require("dotenv").config();
+const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const { query } = require("../utils/db");
@@ -27,9 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
 
-const itemRouter = require("./routes/item.routes");
-const categoryRouter = require("./routes/category.routes");
-const standardItemRouter = require("./routes/standardItem.routes");
+const categoryRouter = createRoutes("../controllers/category.controller");
+const itemRouter = createRoutes("../controllers/item.controller");
+const standardItemRouter = createRoutes("../controllers/standardItem.controller");
 
 // TODO: incorporate the old api in here, so no breaking changes are forced yet
 app.use("/api/v2/item", itemRouter);
@@ -41,7 +42,8 @@ app.listen(PORT, () => {
     new Item();
     new Category();
     new StandardItem();
-    sequelize.sync();
-    console.log("All models were synchronized successfully.");
+    sequelize.sync()
+        .then(() => console.log("All models were synchronized successfully."))
+        .catch((e) => { console.log(e); });
     console.log(`Shopping list backend listening at http://localhost:${PORT}`);
 });
