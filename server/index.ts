@@ -1,7 +1,5 @@
-import { sequelize } from './db';
+import { DBInit } from './db';
 import { createRoutes } from './routes/routeCreator.routes';
-import { seedDatabase } from './seeders/seeder';
-import { Category } from './models/category.model';
 
 require('dotenv').config();
 const express = require('express');
@@ -36,24 +34,13 @@ app.use('', deprecatedRoutesRouter);
 
 // TODO: beautify logging
 
-app.listen(PORT, async () => {
+const server = app.listen(PORT, async () => {
   console.log(`Shopping list backend listening at http://localhost:${PORT}`);
+  await DBInit();
+});
 
-  if (await Category.count() === 0) {
-    sequelize.sync({ force: true })
-      .then(() => console.log('All models were synchronized successfully.'))
-      .then(() => {
-        console.log('Seeding database');
-        seedDatabase();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  } else {
-    sequelize.sync()
-      .then(() => console.log('All models were synchronized successfully.'))
-      .catch((e) => {
-        console.log(e);
-      });
-  }
+process.on('SIGTERM', () => {
+  server.close(() => {
+    console.log('Process terminated');
+  });
 });
