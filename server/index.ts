@@ -1,13 +1,10 @@
-import { DBInit } from './db';
 import { createRoutes } from './routes/routeCreator.routes';
 
 require('dotenv').config();
 const express = require('express');
 
-const app = express();
+export const app = express();
 const bodyParser = require('body-parser');
-
-const PORT = 3001;
 const compression = require('compression');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -33,14 +30,3 @@ app.use('/api/v2/standardItem', standardItemRouter);
 app.use('', deprecatedRoutesRouter);
 
 // TODO: beautify logging
-
-const server = app.listen(PORT, async () => {
-  console.log(`Shopping list backend listening at http://localhost:${PORT}`);
-  await DBInit();
-});
-
-process.on('SIGTERM', () => {
-  server.close(() => {
-    console.log('Process terminated');
-  });
-});
