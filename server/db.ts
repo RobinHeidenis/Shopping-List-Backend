@@ -54,5 +54,5 @@ export async function DBInitTest() {
       process.kill(process.pid, 'SIGTERM');
     });
   await sequelize.sync({ force: true });
-  await seedDatabase();
+  seedDatabase();
 }

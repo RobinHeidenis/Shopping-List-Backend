@@ -10,10 +10,9 @@ beforeAll(() => DBInitTest(), 10000);
 
 afterAll(async () => {
   await sequelize.close();
-  // server.close();
 });
 
-describe('Get Endpoints', () => {
+describe('Get Endpoints Success', () => {
   beforeEach(async () => {
     await sequelize.sync({ force: true });
     await seedDatabase();
@@ -48,5 +47,28 @@ describe('Get Endpoints', () => {
     expect(res.body.name).toEqual('test');
     expect(res.body.categoryId).toEqual(2);
     expect(res.body.url).toEqual(null);
+  });
+});
+
+describe('Get Endpoints Failure', () => {
+  it('should fail to find category 3', async () => {
+    const res = await request(app)
+      .get('/api/v2/category/3');
+    expect(res.statusCode).toEqual(404);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('should fail to find item 1', async () => {
+    const res = await request(app)
+      .get('/api/v2/item/1');
+    expect(res.statusCode).toEqual(404);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('should fail to find standard item 1', async () => {
+    const res = await request(app)
+      .get('/api/v2/standardItem/1');
+    expect(res.statusCode).toEqual(404);
+    expect(res.body).toHaveProperty('error');
   });
 });
