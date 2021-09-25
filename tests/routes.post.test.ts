@@ -19,7 +19,7 @@ beforeEach(async () => {
   });
 });
 
-describe('Post Endpoints', () => {
+describe('Post Endpoints Success', () => {
   it('should create a new category', async () => {
     const res = await request(app)
       .post('/api/v2/category')
@@ -54,5 +54,17 @@ describe('Post Endpoints', () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('id');
     expect(res.body.id).toEqual(1);
+  });
+});
+
+describe('Post Endpoint Failure', () => {
+  it('should not accept the category creation request', async () => {
+    const res = await request(app)
+      .post('/api/v2/category')
+      .send({
+
+      });
+    expect(res.statusCode).toEqual(404);
+    expect(res.body).toHaveProperty('error');
   });
 });
