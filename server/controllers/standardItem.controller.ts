@@ -12,6 +12,11 @@ exports.createOneRequest = async (req, res) => {
   } = req.body;
   // TODO: check if category exists, also do this with item.controller.ts
 
+  if (!name || !categoryId) {
+    handleBadRequestException(res);
+    return;
+  }
+
   StandardItem.create({
     name, quantity, url, categoryId,
   })

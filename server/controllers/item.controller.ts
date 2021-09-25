@@ -11,6 +11,11 @@ exports.createOneRequest = async (req, res) => {
     categoryId,
   } = req.body;
 
+  if (!name || !categoryId) {
+    handleBadRequestException(res);
+    return;
+  }
+
   Item.create({
     name, quantity, url, sequence: await Item.max('sequence') as number + 1, categoryId,
   })

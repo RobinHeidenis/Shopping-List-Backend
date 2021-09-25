@@ -58,13 +58,23 @@ describe('Post Endpoints Success', () => {
 });
 
 describe('Post Endpoint Failure', () => {
-  it('should not accept the category creation request', async () => {
+  it('should not accept the category creation request due to missing color property', async () => {
     const res = await request(app)
       .post('/api/v2/category')
       .send({
-
+        name: 'test',
       });
-    expect(res.statusCode).toEqual(404);
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('should not accept the category creation request due to missing name', async () => {
+    const res = await request(app)
+      .post('/api/v2/category')
+      .send({
+        color: 'test',
+      });
+    expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('error');
   });
 });

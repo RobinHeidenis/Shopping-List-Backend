@@ -6,6 +6,11 @@ import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exce
 exports.createOneRequest = async (req, res) => {
   const { name, color } = req.body;
 
+  if (!name || !color) {
+    handleBadRequestException(res);
+    return;
+  }
+
   Category.create({ name, color })
     .then((category) => res.status(201).json(category))
     .catch((e) => handleDatabaseException(e, res));
