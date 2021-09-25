@@ -1,10 +1,10 @@
 import { DBInitTest, sequelize } from '../server/db';
 import { app } from '../server';
-import { seedDatabase } from '../server/seeders/seeder';
+import { Category } from '../server/models/category.model';
 
 const request = require('supertest');
 
-beforeAll(() => DBInitTest(), 10000);
+beforeAll(async () => { await DBInitTest(); }, 10000);
 
 afterAll(async () => {
   await sequelize.close();
@@ -13,7 +13,11 @@ afterAll(async () => {
 describe('Post Endpoints', () => {
   beforeEach(async () => {
     await sequelize.sync({ force: true });
-    await seedDatabase();
+
+    await Category.create({
+      name: 'Albert Heijn',
+      color: '#179EDA',
+    });
   });
 
   it('should create a new category', async () => {
@@ -25,7 +29,7 @@ describe('Post Endpoints', () => {
       });
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('id');
-    expect(res.body.id).toEqual(3);
+    expect(res.body.id).toEqual(2);
   });
 
   it('should create a new item', async () => {

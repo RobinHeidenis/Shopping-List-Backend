@@ -54,5 +54,13 @@ export async function DBInitTest() {
       process.kill(process.pid, 'SIGTERM');
     });
   await sequelize.sync({ force: true });
-  await seedDatabase();
+
+  await Category.create({
+    name: 'Albert Heijn',
+    color: '#179EDA',
+  });
+  await Category.create({
+    name: 'Snackbar',
+    color: 'yellow',
+  });
 }
