@@ -1,4 +1,4 @@
-export interface insertQueryResult {
+export interface InsertQueryResult {
     fieldcount: number,
     affectedRows: number,
     insertId: number,
@@ -9,7 +9,7 @@ export interface insertQueryResult {
     changedRows: number
 }
 
-export interface searchItem {
+export interface SearchItem {
     name: string,
     link: string,
     img: string,
@@ -18,7 +18,7 @@ export interface searchItem {
     id: string;
 }
 
-export interface category {
+export interface Category {
     id?: number;
     name: string;
     color: string;

@@ -1,13 +1,13 @@
 import { Category } from '../models/category.model';
-import { seeder } from './seeder';
+import { Seeder } from './seeder';
 
-export class categorySeeder implements seeder {
-  seed() {
-    Category.create({
+export class CategorySeeder implements Seeder {
+  async seed() {
+    await Category.create({
       name: 'Albert Heijn',
       color: '#179EDA',
     });
-    Category.create({
+    await Category.create({
       name: 'Snackbar',
       color: 'yellow',
     });

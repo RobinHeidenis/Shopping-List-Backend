@@ -31,9 +31,9 @@ export async function DBInit() {
   if (categoryCount === 0) {
     sequelize.sync({ force: true })
       .then(() => console.log('All models were synchronized successfully.'))
-      .then(() => {
+      .then(async () => {
         console.log('Seeding database');
-        seedDatabase();
+        await seedDatabase();
       })
       .catch((e) => {
         console.log(e);
@@ -54,5 +54,5 @@ export async function DBInitTest() {
       process.kill(process.pid, 'SIGTERM');
     });
   await sequelize.sync({ force: true });
-  seedDatabase();
+  await seedDatabase();
 }
