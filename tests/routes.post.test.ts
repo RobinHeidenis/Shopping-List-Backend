@@ -8,7 +8,6 @@ beforeAll(() => DBInitTest(), 10000);
 
 afterAll(async () => {
   await sequelize.close();
-  // server.close();
 });
 
 describe('Post Endpoints', () => {
