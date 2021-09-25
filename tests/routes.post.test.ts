@@ -10,16 +10,16 @@ afterAll(async () => {
   await sequelize.close();
 });
 
-describe('Post Endpoints', () => {
-  beforeEach(async () => {
-    await sequelize.sync({ force: true });
+beforeEach(async () => {
+  await sequelize.sync({ force: true });
 
-    await Category.create({
-      name: 'Albert Heijn',
-      color: '#179EDA',
-    });
+  await Category.create({
+    name: 'Albert Heijn',
+    color: '#179EDA',
   });
+});
 
+describe('Post Endpoints', () => {
   it('should create a new category', async () => {
     const res = await request(app)
       .post('/api/v2/category')

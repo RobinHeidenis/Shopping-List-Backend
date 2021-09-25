@@ -1,6 +1,5 @@
 import { DBInitTest, sequelize } from '../server/db';
 import { app } from '../server';
-import { seedDatabase } from '../server/seeders/seeder';
 import { Item } from '../server/models/item.model';
 import { StandardItem } from '../server/models/standardItem.model';
 import { Category } from '../server/models/category.model';
@@ -13,15 +12,15 @@ afterAll(async () => {
   await sequelize.close();
 });
 
-describe('Get Endpoints Success', () => {
-  beforeEach(async () => {
-    await sequelize.sync({ force: true });
-    await Category.create({
-      name: 'Albert Heijn',
-      color: '#179EDA',
-    });
+beforeEach(async () => {
+  await sequelize.sync({ force: true });
+  await Category.create({
+    name: 'Albert Heijn',
+    color: '#179EDA',
   });
+});
 
+describe('Get Endpoints Success', () => {
   it('should get the first category', async () => {
     const res = await request(app)
       .get('/api/v2/category/1');
@@ -55,14 +54,6 @@ describe('Get Endpoints Success', () => {
 });
 
 describe('Get Endpoints Failure', () => {
-  beforeEach(async () => {
-    await sequelize.sync({ force: true });
-    await Category.create({
-      name: 'Albert Heijn',
-      color: '#179EDA',
-    });
-  });
-
   it('should fail to find category 3', async () => {
     const res = await request(app)
       .get('/api/v2/category/3');
