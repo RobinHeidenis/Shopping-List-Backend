@@ -1,12 +1,10 @@
-import { DBInit, sequelize } from '../server/db';
+import { sequelize } from '../server/db';
 import { app } from '../server';
 import { Item } from '../server/models/item.model';
 import { StandardItem } from '../server/models/standardItem.model';
-import { Category } from '../server/models/category.model';
+import { seedDatabase } from '../server/seeders/seeder';
 
 const request = require('supertest');
-
-beforeAll(async () => { await DBInit(); }, 10000);
 
 afterAll(async () => {
   await sequelize.close();
@@ -14,10 +12,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await sequelize.sync({ force: true });
-  await Category.create({
-    name: 'Albert Heijn',
-    color: '#179EDA',
-  });
+  await seedDatabase();
 });
 
 describe('Get Endpoints Success', () => {

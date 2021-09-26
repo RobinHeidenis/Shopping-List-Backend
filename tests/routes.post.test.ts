@@ -1,10 +1,8 @@
-import { DBInit, sequelize } from '../server/db';
+import { sequelize } from '../server/db';
 import { app } from '../server';
-import { Category } from '../server/models/category.model';
+import { seedDatabase } from '../server/seeders/seeder';
 
 const request = require('supertest');
-
-beforeAll(async () => { await DBInit(); }, 10000);
 
 afterAll(async () => {
   await sequelize.close();
@@ -12,11 +10,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await sequelize.sync({ force: true });
-
-  await Category.create({
-    name: 'Albert Heijn',
-    color: '#179EDA',
-  });
+  await seedDatabase();
 });
 
 describe('Post Endpoints Success', () => {
@@ -29,7 +23,7 @@ describe('Post Endpoints Success', () => {
       });
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('id');
-    expect(res.body.id).toEqual(2);
+    expect(res.body.id).toEqual(3);
   });
 
   it('should create a new item', async () => {
