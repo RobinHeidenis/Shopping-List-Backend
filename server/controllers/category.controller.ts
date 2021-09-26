@@ -38,7 +38,7 @@ exports.updateOneRequest = async (req, res) => {
   const { id } = req.params;
   const { name, color } = req.body;
 
-  if (!id || !parseInt(id)) {
+  if (!id || !parseInt(id) || (!name && !color)) {
     handleBadRequestException(res);
     return;
   }

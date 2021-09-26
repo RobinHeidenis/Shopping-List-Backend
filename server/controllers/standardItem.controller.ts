@@ -50,7 +50,7 @@ exports.updateOneRequest = async (req, res) => {
     name, quantity, url,
   } = req.body;
 
-  if (!id || !parseInt(id)) {
+  if (!id || !parseInt(id) || (!name && !quantity && !url)) {
     handleBadRequestException(res);
     return;
   }

@@ -240,7 +240,10 @@ describe('Patch Endpoints Failure', () => {
 
     it('should not be able to find the category by the given id', async () => {
       const res = await request(app)
-        .patch('/api/v2/category/3');
+        .patch('/api/v2/category/3')
+        .send({
+          name: 'updated',
+        });
       expect(res.statusCode).toEqual(404);
       expect(res.body).toHaveProperty('error');
     });
@@ -279,7 +282,10 @@ describe('Patch Endpoints Failure', () => {
 
     it('should not be able to find the item by the given id', async () => {
       const res = await request(app)
-        .patch('/api/v2/item/3');
+        .patch('/api/v2/item/3')
+        .send({
+          name: 'updated',
+        });
       expect(res.statusCode).toEqual(404);
       expect(res.body).toHaveProperty('error');
     });
@@ -317,7 +323,10 @@ describe('Patch Endpoints Failure', () => {
 
     it('should not be able to find the standard item by the given id', async () => {
       const res = await request(app)
-        .patch('/api/v2/standardItem/3');
+        .patch('/api/v2/standardItem/3')
+        .send({
+          name: 'updated',
+        });
       expect(res.statusCode).toEqual(404);
       expect(res.body).toHaveProperty('error');
     });
