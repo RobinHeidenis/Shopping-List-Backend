@@ -1,5 +1,5 @@
-import { DBInit, sequelize } from '../server/db';
-import { Category } from '../server/models/category.model';
+import { DBInit, sequelize } from '../../server/db';
+import { Category } from '../../server/models/category.model';
 
 afterAll(async () => {
   await sequelize.close();
