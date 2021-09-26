@@ -84,15 +84,6 @@ describe('Standard item PATCH endpoint success', () => {
 });
 
 describe('Standard item PATCH endpoint failure', () => {
-  beforeEach(async () => {
-    await StandardItem.create({
-      name: 'test',
-      quantity: 'test',
-      url: 'test',
-      categoryId: 1,
-    });
-  });
-
   it('should refuse the standard item 1 update request because there are no properties to update', async () => {
     const res = await request(app)
       .patch('/api/v2/standardItem/1');
@@ -100,7 +91,7 @@ describe('Standard item PATCH endpoint failure', () => {
     expect(res.body).toHaveProperty('error');
   });
 
-  it('should not be able to find the standard item by the given id', async () => {
+  it('should not find the category with the provided id', async () => {
     const res = await request(app)
       .patch('/api/v2/standardItem/3')
       .send({
@@ -110,14 +101,14 @@ describe('Standard item PATCH endpoint failure', () => {
     expect(res.body).toHaveProperty('error');
   });
 
-  it('should refuse the request because id is not a number', async () => {
+  it('should refuse the request, as id is not a number', async () => {
     const res = await request(app)
       .patch('/api/v2/standardItem/NotANumber');
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('error');
   });
 
-  it('should not find the route, because it is not available for PATCH', async () => {
+  it('should fail to find the standard item route, as it is not available for PATCH', async () => {
     const res = await request(app)
       .patch('/api/v2/standardItem');
     expect(res.statusCode).toEqual(404);

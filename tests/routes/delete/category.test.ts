@@ -14,7 +14,7 @@ beforeEach(async () => {
 });
 
 describe('Category DELETE endpoint success', () => {
-  it('should successfully delete category 1', async () => {
+  it('should delete category 1', async () => {
     let res = await request(app)
       .delete('/api/v2/category/1');
     expect(res.statusCode).toEqual(204);
@@ -39,5 +39,11 @@ describe('Category DELETE endpoint failure', () => {
       .delete('/api/v2/category/NotANumber');
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('error');
+  });
+
+  it('should fail to find the category route, as it is not available for DELETE', async () => {
+    const res = await request(app)
+      .get('/api/v2/category');
+    expect(res.statusCode).toEqual(404);
   });
 });

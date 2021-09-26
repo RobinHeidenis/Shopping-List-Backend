@@ -29,10 +29,17 @@ describe('Standard item GET endpoint success', () => {
 });
 
 describe('Standard item GET endpoint failure', () => {
-  it('should fail to find standard item 1', async () => {
+  it('should not find a category with the provided id', async () => {
     const res = await request(app)
       .get('/api/v2/standardItem/1');
     expect(res.statusCode).toEqual(404);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('should refuse the request, as id is not a number', async () => {
+    const res = await request(app)
+      .delete('/api/v2/standardItem/NotANumber');
+    expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('error');
   });
 

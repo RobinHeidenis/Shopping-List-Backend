@@ -15,7 +15,7 @@ beforeEach(async () => {
 });
 
 describe('Item GET endpoint success', () => {
-  it('should get the first item', async () => {
+  it('should find the first item', async () => {
     await Item.create({ name: 'test', categoryId: 1, sequence: 1 });
     const res = await request(app)
       .get('/api/v2/item/1');
@@ -29,10 +29,17 @@ describe('Item GET endpoint success', () => {
 });
 
 describe('Item GET endpoint failure', () => {
-  it('should fail to find item 1', async () => {
+  it('should not find a category with the provided id', async () => {
     const res = await request(app)
       .get('/api/v2/item/1');
     expect(res.statusCode).toEqual(404);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('should refuse the request, as id is not a number', async () => {
+    const res = await request(app)
+      .delete('/api/v2/item/NotANumber');
+    expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('error');
   });
 

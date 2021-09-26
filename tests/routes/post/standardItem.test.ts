@@ -28,7 +28,7 @@ describe('Standard item POST endpoint success', () => {
 });
 
 describe('Standard item POST endpoint failure', () => {
-  it('should not accept the standard item creation request due to missing name', async () => {
+  it('should not accept the standard item creation request, as name is missing', async () => {
     const res = await request(app)
       .post('/api/v2/standardItem')
       .send({
@@ -40,7 +40,7 @@ describe('Standard item POST endpoint failure', () => {
     expect(res.body).toHaveProperty('error');
   });
 
-  it('should not accept the standard item creation request due to missing categoryId', async () => {
+  it('should not accept the standard item creation request, as categoryId is missing', async () => {
     const res = await request(app)
       .post('/api/v2/standardItem')
       .send({
@@ -52,7 +52,7 @@ describe('Standard item POST endpoint failure', () => {
     expect(res.body).toHaveProperty('error');
   });
 
-  it('should not accept the standard item creation request due to multiple missing properties', async () => {
+  it('should not accept the standard item creation request, as multiple properties are missing', async () => {
     const res = await request(app)
       .post('/api/v2/standardItem')
       .send({
@@ -63,7 +63,7 @@ describe('Standard item POST endpoint failure', () => {
     expect(res.body).toHaveProperty('error');
   });
 
-  it('should not accept the standard item creation request due to categoryId not being a number', async () => {
+  it('should not accept the standard item creation request, as categoryId is not a number', async () => {
     const res = await request(app)
       .post('/api/v2/standardItem')
       .send({
@@ -74,7 +74,18 @@ describe('Standard item POST endpoint failure', () => {
     expect(res.body).toHaveProperty('error');
   });
 
-  it('should not find the route', async () => {
+  it('should return a database failure, as the categoryId provided does not exist', async () => {
+    const res = await request(app)
+      .post('/api/v2/item')
+      .send({
+        name: 'test',
+        categoryId: 3,
+      });
+    expect(res.statusCode).toEqual(500);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('should fail to find the standard item route, as it is not available for POST', async () => {
     const res = await request(app)
       .post('/api/v2/standardItem/1');
     expect(res.statusCode).toEqual(404);

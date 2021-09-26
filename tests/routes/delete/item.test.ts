@@ -25,7 +25,7 @@ describe('Item DELETE endpoint success', () => {
     });
   });
 
-  it('should successfully delete item 1', async () => {
+  it('should delete item 1', async () => {
     let res = await request(app)
       .delete('/api/v2/item/1');
     expect(res.statusCode).toEqual(204);
@@ -50,5 +50,11 @@ describe('Item DELETE endpoint failure', () => {
       .delete('/api/v2/item/NotANumber');
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('error');
+  });
+
+  it('should fail to find the item route, as it is not available for DELETE', async () => {
+    const res = await request(app)
+      .get('/api/v2/item');
+    expect(res.statusCode).toEqual(404);
   });
 });
