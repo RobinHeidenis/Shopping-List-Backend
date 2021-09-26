@@ -58,23 +58,73 @@ describe('Post Endpoints Success', () => {
 });
 
 describe('Post Endpoint Failure', () => {
-  it('should not accept the category creation request due to missing color property', async () => {
-    const res = await request(app)
-      .post('/api/v2/category')
-      .send({
-        name: 'test',
-      });
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty('error');
+  describe('Category Endpoint', () => {
+    it('should not accept the category creation request due to missing color property', async () => {
+      const res = await request(app)
+        .post('/api/v2/category')
+        .send({
+          name: 'test',
+        });
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('should not accept the category creation request due to missing name', async () => {
+      const res = await request(app)
+        .post('/api/v2/category')
+        .send({
+          color: 'test',
+        });
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toHaveProperty('error');
+    });
   });
 
-  it('should not accept the category creation request due to missing name', async () => {
-    const res = await request(app)
-      .post('/api/v2/category')
-      .send({
-        color: 'test',
-      });
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty('error');
+  describe('Item Endpoint', () => {
+    it('should not accept the item creation request due to missing name', async () => {
+      const res = await request(app)
+        .post('/api/v2/item')
+        .send({
+          url: 'test',
+          quantity: 'test',
+          categoryId: 1,
+        });
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('should not accept the item creation request due to missing categoryId', async () => {
+      const res = await request(app)
+        .post('/api/v2/item')
+        .send({
+          name: 'test',
+          url: 'test',
+          quantity: 'test',
+        });
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('should not accept the item creation request due to multiple missing properties', async () => {
+      const res = await request(app)
+        .post('/api/v2/item')
+        .send({
+          url: 'test',
+          quantity: 'test',
+        });
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('should not accept the item creation request due to categoryId not being a number', async () => {
+      const res = await request(app)
+        .post('/api/v2/item')
+        .send({
+          name: 'test',
+          categoryId: 'NotANumber',
+        });
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toHaveProperty('error');
+    });
   });
 });
