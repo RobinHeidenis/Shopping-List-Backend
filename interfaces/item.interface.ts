@@ -1,15 +1,15 @@
-export interface item {
+export interface Item {
     name: string,
     quantity?: string,
     url?: string,
 }
 
-export interface fullItem extends item {
+export interface FullItem extends Item {
     id: number,
     status: number
 }
 
-export interface itemSequence {
+export interface ItemSequence {
     id: number,
     sequence: number
 }

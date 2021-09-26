@@ -11,8 +11,17 @@ exports.createOneRequest = async (req, res) => {
     categoryId,
   } = req.body;
 
+  if (!name || (!categoryId && !parseInt(categoryId))) {
+    handleBadRequestException(res);
+    return;
+  }
+
+  const catId = parseInt(categoryId);
+
+  const numItems: number = await Item.max('sequence');
+
   Item.create({
-    name, quantity, url, sequence: await Item.max('sequence') as number + 1, categoryId,
+    name, quantity, url, sequence: numItems + 1, categoryId: catId,
   })
     .then((item) => res.status(201).json(item))
     .catch((e) => handleDatabaseException(e, res));

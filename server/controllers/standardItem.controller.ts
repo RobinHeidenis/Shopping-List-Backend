@@ -1,5 +1,5 @@
-import { handleDatabaseException } from '../exceptions/database.exception';
 import { StandardItem } from '../models/standardItem.model';
+import { handleDatabaseException } from '../exceptions/database.exception';
 import { handleBadRequestException } from '../exceptions/badRequest.exception';
 import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
 
@@ -12,8 +12,15 @@ exports.createOneRequest = async (req, res) => {
   } = req.body;
   // TODO: check if category exists, also do this with item.controller.ts
 
+  if (!name || (!categoryId && !parseInt(categoryId))) {
+    handleBadRequestException(res);
+    return;
+  }
+
+  const catId = parseInt(categoryId);
+
   StandardItem.create({
-    name, quantity, url, categoryId,
+    name, quantity, url, categoryId: catId,
   })
     .then((item) => res.status(201).json(item))
     .catch((e) => handleDatabaseException(e, res));

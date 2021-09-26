@@ -1,6 +1,6 @@
 // noinspection SqlResolve
 
-import { category, insertQueryResult, searchItem } from '../../interfaces';
+import { Category, InsertQueryResult, SearchItem } from '../../interfaces';
 import { query } from '../../utils/db';
 
 require('dotenv').config();
@@ -63,9 +63,9 @@ urlRoutes.get('/api/getCategories', (req, res) => {
 });
 
 urlRoutes.post('/api/addCategory', (req, res) => {
-  const category: category = req.body.item;
+  const category: Category = req.body.item;
   query('INSERT INTO shopping_list_categories (name, color) VALUES (?, ?)', [category.name, category.color])
-    .then((result: insertQueryResult) => query('SELECT * FROM shopping_list WHERE id = ?', [result.insertId]).then((result) => {
+    .then((result: InsertQueryResult) => query('SELECT * FROM shopping_list WHERE id = ?', [result.insertId]).then((result) => {
       res.json({
         success: true,
         item: result,
@@ -125,7 +125,7 @@ urlRoutes.post('/api/deleteItem', authenticateJWT, (req, res) => {
 urlRoutes.post('/api/addItem', authenticateJWT, (req, res) => {
   const { item } = req.body;
   query('SELECT count(*) FROM shopping_list', []).then((result) => query('INSERT INTO shopping_list (name, quantity, url, sequence) VALUES (?, ?, ?, ?)', [item.name, item.quantity, item.url, result[0][Object.keys(result[0])[0]]])
-    .then((result: insertQueryResult) => query('SELECT * FROM shopping_list WHERE id = ?', [result.insertId]).then((result) => {
+    .then((result: InsertQueryResult) => query('SELECT * FROM shopping_list WHERE id = ?', [result.insertId]).then((result) => {
       res.json({
         success: true,
         item: result,
@@ -179,7 +179,7 @@ urlRoutes.post('/api/search', authenticateJWT, (req, res) => {
 
     initialStyle.search.results.filter((item) => item.type === 'default').forEach((topItem) => {
       const item = topItem.products[0];
-      const obj: searchItem = {} as searchItem;
+      const obj: SearchItem = {} as SearchItem;
 
       obj.name = item.title;
       obj.link = `https://ah.nl${item.link}`;
@@ -204,7 +204,7 @@ urlRoutes.get('/api/getStandardItems', authenticateJWT, (req, res) => {
 urlRoutes.post('/api/addStandardItem', authenticateJWT, (req, res) => {
   const { item } = req.body;
   query('INSERT INTO shopping_list_standard (name, quantity, url) VALUES (?, ?, ?)', [item.name, item.quantity, item.url])
-    .then((result: insertQueryResult) => query('SELECT * FROM shopping_list_standard WHERE id = ?', [result.insertId]).then((result) => res.json({
+    .then((result: InsertQueryResult) => query('SELECT * FROM shopping_list_standard WHERE id = ?', [result.insertId]).then((result) => res.json({
       success: true,
       item: result,
     })));

@@ -1,13 +1,13 @@
-import { categorySeeder } from './category.seeder';
+import { CategorySeeder } from './category.seeder';
 
-export interface seeder {
-  seed: () => void;
+export interface Seeder {
+  seed: () => Promise<void>;
 }
 
-const seeders: seeder[] = [
-  new categorySeeder(),
+const seeders: Seeder[] = [
+  new CategorySeeder(),
 ];
 
-export function seedDatabase() {
-  seeders.forEach((seeder) => seeder.seed());
+export async function seedDatabase() {
+  seeders.forEach(async (seederClass) => { await seederClass.seed(); });
 }
