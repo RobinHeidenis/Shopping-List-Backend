@@ -1,10 +1,10 @@
-import { DBInitTest, sequelize } from '../server/db';
+import { DBInit, sequelize } from '../server/db';
 import { app } from '../server';
 import { Category } from '../server/models/category.model';
 
 const request = require('supertest');
 
-beforeAll(async () => { await DBInitTest(); }, 10000);
+beforeAll(async () => { await DBInit(); }, 10000);
 
 afterAll(async () => {
   await sequelize.close();

@@ -24,12 +24,13 @@ export async function DBInit() {
     });
 
   const categoryCount = await Category.count()
-    .catch(() => {
+    .catch((e) => {
+      console.log(e);
       sequelize.sync({ force: true });
     });
 
   if (categoryCount === 0) {
-    sequelize.sync({ force: true })
+    await sequelize.sync({ force: true })
       .then(() => console.log('All models were synchronized successfully.'))
       .then(async () => {
         console.log('Seeding database');
@@ -39,28 +40,10 @@ export async function DBInit() {
         console.log(e);
       });
   } else {
-    sequelize.sync()
+    await sequelize.sync()
       .then(() => console.log('All models were synchronized successfully.'))
       .catch((e) => {
         console.log(e);
       });
   }
-}
-
-export async function DBInitTest() {
-  await sequelize.authenticate()
-    .catch((e) => {
-      console.log(e);
-      process.kill(process.pid, 'SIGTERM');
-    });
-  await sequelize.sync({ force: true });
-
-  await Category.create({
-    name: 'Albert Heijn',
-    color: '#179EDA',
-  });
-  await Category.create({
-    name: 'Snackbar',
-    color: 'yellow',
-  });
 }
