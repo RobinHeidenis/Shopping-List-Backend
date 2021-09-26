@@ -11,7 +11,7 @@ exports.createOneRequest = async (req, res) => {
     categoryId,
   } = req.body;
 
-  if (!name || (!categoryId && parseInt(categoryId))) {
+  if (!name || !categoryId || !parseInt(categoryId)) {
     handleBadRequestException(res);
     return;
   }
