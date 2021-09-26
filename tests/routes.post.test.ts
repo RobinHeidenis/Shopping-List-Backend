@@ -37,7 +37,7 @@ describe('Post Endpoints Success', () => {
       .post('/api/v2/item')
       .send({
         name: 'test1',
-        category: '1',
+        categoryId: '1',
       });
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('id');
@@ -49,7 +49,7 @@ describe('Post Endpoints Success', () => {
       .post('/api/v2/standardItem')
       .send({
         name: 'test1',
-        category: '1',
+        categoryId: '1',
       });
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('id');
