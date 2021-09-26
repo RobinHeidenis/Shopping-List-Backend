@@ -47,14 +47,11 @@ exports.updateOneRequest = async (req, res) => {
     .catch((e) => handleDatabaseException(e, res));
 
   if (foundCategory) {
-    const category = await foundCategory.update({
+    foundCategory.update({
       name, color,
-    });
-
-    // TODO: place catch here with handleDatabaseException.
-    // TODO: Check if this occurs in other controllers too.
-
-    res.status(200).json(category);
+    })
+      .then((category) => res.status(200).json(category))
+      .catch((e) => handleDatabaseException(e, res));
   } else {
     handleRecordNotFoundException(res);
   }

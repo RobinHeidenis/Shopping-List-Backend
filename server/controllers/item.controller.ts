@@ -60,11 +60,11 @@ exports.updateOneRequest = async (req, res) => {
     .catch((e) => handleDatabaseException(e, res));
 
   if (foundItem) {
-    const item = await foundItem.update({
+    foundItem.update({
       name, quantity, url, status,
-    });
-
-    res.status(200).json(item);
+    })
+      .then((item) => res.status(200).json(item))
+      .catch((e) => handleDatabaseException(e, res));
   } else {
     handleRecordNotFoundException(res);
   }
