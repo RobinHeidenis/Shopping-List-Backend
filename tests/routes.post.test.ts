@@ -78,6 +78,12 @@ describe('Post Endpoint Failure', () => {
       expect(res.statusCode).toEqual(400);
       expect(res.body).toHaveProperty('error');
     });
+
+    it('should not find the route', async () => {
+      const res = await request(app)
+        .post('/api/v2/category/1');
+      expect(res.statusCode).toEqual(404);
+    });
   });
 
   describe('Item Endpoint', () => {
@@ -125,6 +131,12 @@ describe('Post Endpoint Failure', () => {
         });
       expect(res.statusCode).toEqual(400);
       expect(res.body).toHaveProperty('error');
+    });
+
+    it('should not find the route', async () => {
+      const res = await request(app)
+        .post('/api/v2/item/1');
+      expect(res.statusCode).toEqual(404);
     });
   });
 
@@ -174,5 +186,11 @@ describe('Post Endpoint Failure', () => {
       });
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('error');
+  });
+
+  it('should not find the route', async () => {
+    const res = await request(app)
+      .post('/api/v2/standardItem/1');
+    expect(res.statusCode).toEqual(404);
   });
 });

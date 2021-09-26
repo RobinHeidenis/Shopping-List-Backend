@@ -51,6 +51,9 @@ exports.updateOneRequest = async (req, res) => {
       name, color,
     });
 
+    // TODO: place catch here with handleDatabaseException.
+    // TODO: Check if this occurs in other controllers too.
+
     res.status(200).json(category);
   } else {
     handleRecordNotFoundException(res);
