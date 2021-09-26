@@ -127,4 +127,52 @@ describe('Post Endpoint Failure', () => {
       expect(res.body).toHaveProperty('error');
     });
   });
+
+  describe('Standard Item Endpoint', () => {
+    it('should not accept the standard item creation request due to missing name', async () => {
+      const res = await request(app)
+        .post('/api/v2/standardItem')
+        .send({
+          url: 'test',
+          quantity: 'test',
+          categoryId: 1,
+        });
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toHaveProperty('error');
+    });
+  });
+
+  it('should not accept the standard item creation request due to missing categoryId', async () => {
+    const res = await request(app)
+      .post('/api/v2/standardItem')
+      .send({
+        name: 'test',
+        url: 'test',
+        quantity: 'test',
+      });
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('should not accept the standard item creation request due to multiple missing properties', async () => {
+    const res = await request(app)
+      .post('/api/v2/standardItem')
+      .send({
+        url: 'test',
+        quantity: 'test',
+      });
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('should not accept the standard item creation request due to categoryId not being a number', async () => {
+    const res = await request(app)
+      .post('/api/v2/standardItem')
+      .send({
+        name: 'test',
+        categoryId: 'NotANumber',
+      });
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty('error');
+  });
 });
