@@ -20,31 +20,31 @@ export const sequelize = new Sequelize({
 export async function DBInit() {
   await sequelize.authenticate()
     .catch((e) => {
-      console.log(e);
+      Logger.error(e);
       process.kill(process.pid, 'SIGTERM');
     });
 
   const categoryCount = await Category.count()
     .catch((e) => {
-      console.log(e);
+      Logger.error(e);
       sequelize.sync({ force: true });
     });
 
   if (categoryCount === 0) {
     await sequelize.sync({ force: true })
-      .then(() => console.log('All models were synchronized successfully.'))
+      .then(() => Logger.success('All models were synchronized successfully.'))
       .then(async () => {
-        console.log('Seeding database');
+        Logger.info('Seeding database');
         await seedDatabase();
       })
       .catch((e) => {
-        console.log(e);
+        Logger.error(e);
       });
   } else {
     await sequelize.sync()
-      .then(() => console.log('All models were synchronized successfully.'))
+      .then(() => Logger.success('All models were synchronized successfully.'))
       .catch((e) => {
-        console.log(e);
+        Logger.error(e);
       });
   }
 }

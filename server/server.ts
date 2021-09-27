@@ -11,6 +11,6 @@ export const server = app.listen(PORT, async () => {
 
 process.on('SIGTERM', () => {
   server.close(() => {
-    console.log('Process terminated');
+    Logger.warn('Process terminated');
   });
 });
