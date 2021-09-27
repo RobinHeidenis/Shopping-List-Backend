@@ -90,4 +90,10 @@ exports.deleteOneRequest = async (req, res) => {
   }
 };
 
+exports.getAllRequest = async (req, res) => {
+  Item.findAll()
+    .then((items) => res.status(200).send(items))
+    .catch((e) => handleDatabaseException(e, res));
+};
+
 // todo add separate endpoint for updating sequences
