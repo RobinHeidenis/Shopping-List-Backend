@@ -2,7 +2,6 @@ import { StandardItem } from '../models/standardItem.model';
 import { handleDatabaseException } from '../exceptions/database.exception';
 import { handleBadRequestException } from '../exceptions/badRequest.exception';
 import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
-import { Item } from '../models/item.model';
 
 exports.createOneRequest = async (req, res) => {
   const {
