@@ -32,5 +32,3 @@ app.use('/api/v2/item', itemRouter);
 app.use('/api/v2/category', categoryRouter);
 app.use('/api/v2/standardItem', standardItemRouter);
 app.use('', deprecatedRoutesRouter);
-
-// TODO: beautify logging
