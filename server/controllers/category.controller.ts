@@ -76,3 +76,9 @@ exports.deleteOneRequest = async (req, res) => {
     handleRecordNotFoundException(res);
   }
 };
+
+exports.getAllRequest = async (req, res) => {
+  Category.findAll()
+    .then((categories) => res.status(200).send(categories))
+    .catch((e) => handleDatabaseException(e, res));
+};
