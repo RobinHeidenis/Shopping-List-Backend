@@ -2,6 +2,7 @@
 
 import { Category, InsertQueryResult, SearchItem } from '../../interfaces';
 import { query } from '../../utils/db';
+import { Logger } from '../logging/logger';
 
 require('dotenv').config();
 const express = require('express');
@@ -22,7 +23,7 @@ const authenticateJWT = (req, res, next) => {
 
     jwt.verify(token, process.env.accessTokenSecret, (err, user) => {
       if (err) {
-        console.log(err);
+        Logger.error(err);
         return res.status(403).send({
           error: true,
           message: 'Unauthorized',
@@ -59,7 +60,7 @@ urlRoutes.get('/api/getCategories', (req, res) => {
   query('SELECT * FROM shopping_list_categories', []).then((results) => {
     const items = { categories: results };
     res.json(items);
-  }).catch((reason) => console.log(reason));
+  }).catch((reason) => Logger.error(reason));
 });
 
 urlRoutes.post('/api/addCategory', (req, res) => {
@@ -84,7 +85,7 @@ urlRoutes.post('/api/deleteCategory', (req, res) => {
     sse.send({
       id: req.body.id,
     }, 'deleteCategory');
-  }).catch((reason) => console.log(reason));
+  }).catch((reason) => Logger.error(reason));
 });
 
 urlRoutes.get('/api/getItemList', authenticateJWT, (req, res) => {
@@ -92,7 +93,7 @@ urlRoutes.get('/api/getItemList', authenticateJWT, (req, res) => {
     // TODO: get the category ids from the items and add the category info there
     const items = { items: results };
     res.json(items);
-  }).catch((reason) => console.log(reason));
+  }).catch((reason) => Logger.error(reason));
 });
 
 urlRoutes.post('/api/updateItemStatus', authenticateJWT, (req, res) => {
@@ -106,7 +107,7 @@ urlRoutes.post('/api/updateItemStatus', authenticateJWT, (req, res) => {
       id: req.body.id,
       status: req.body.status,
     }, 'updateItemStatus');
-  }).catch((reason) => console.log(reason));
+  }).catch((reason) => Logger.error(reason));
 });
 
 urlRoutes.post('/api/deleteItem', authenticateJWT, (req, res) => {
@@ -119,7 +120,7 @@ urlRoutes.post('/api/deleteItem', authenticateJWT, (req, res) => {
     sse.send({
       id: req.body.id,
     }, 'deleteItem');
-  }).catch((reason) => console.log(reason));
+  }).catch((reason) => Logger.error(reason));
 });
 
 urlRoutes.post('/api/addItem', authenticateJWT, (req, res) => {
@@ -198,7 +199,7 @@ urlRoutes.get('/api/getStandardItems', authenticateJWT, (req, res) => {
   query('SELECT * from shopping_list_standard', []).then((results) => {
     const items = { items: results };
     res.json(items);
-  }).catch((reason) => console.log(reason));
+  }).catch((reason) => Logger.error(reason));
 });
 
 urlRoutes.post('/api/addStandardItem', authenticateJWT, (req, res) => {
@@ -215,7 +216,7 @@ urlRoutes.post('/api/deleteStandardItem', authenticateJWT, (req, res) => {
     res.error();
     return;
   }
-  query('DELETE FROM shopping_list_standard WHERE id = ?', [req.body.id]).then(res.json({ success: true })).catch((reason) => console.log(reason));
+  query('DELETE FROM shopping_list_standard WHERE id = ?', [req.body.id]).then(res.json({ success: true })).catch((reason) => Logger.error(reason));
 });
 
 module.exports = urlRoutes;
