@@ -14,7 +14,8 @@
     "collectCoverage": true,
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
-      "/node_modules/"
+      "/node_modules/",
+      "server/logging/logger.ts"
     ],
     "testResultsProcessor": "jest-sonar"
   },
