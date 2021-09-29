@@ -57,7 +57,7 @@ urlRoutes.post('/api/login', (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.get('/api/getCategories', (req, res) => {
   query('SELECT * FROM shopping_list_categories', []).then((results) => {
@@ -67,7 +67,7 @@ urlRoutes.get('/api/getCategories', (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.post('/api/addCategory', (req, res) => {
   const category: Category = req.body.item;
@@ -82,7 +82,7 @@ urlRoutes.post('/api/addCategory', (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.post('/api/deleteCategory', (req, res) => {
   if (req.body.id.isNaN) {
@@ -98,7 +98,7 @@ urlRoutes.post('/api/deleteCategory', (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.get('/api/getItemList', authenticateJWT, (req, res) => {
   query('SELECT l.id, l.name, l.quantity, l.url, l.status, l.sequence, l.category, c.name as category_name, c.id as category_id, c.color as category_color FROM shopping_list as l JOIN shopping_list_categories as c ON l.category = c.id', []).then((results) => {
@@ -109,7 +109,7 @@ urlRoutes.get('/api/getItemList', authenticateJWT, (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.post('/api/updateItemStatus', authenticateJWT, (req, res) => {
   if (req.body.status < 0 || req.body.status > 1 || req.body.id.isNaN) {
@@ -126,7 +126,7 @@ urlRoutes.post('/api/updateItemStatus', authenticateJWT, (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.post('/api/deleteItem', authenticateJWT, (req, res) => {
   if (req.body.id.isNaN) {
@@ -142,7 +142,7 @@ urlRoutes.post('/api/deleteItem', authenticateJWT, (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.post('/api/addItem', authenticateJWT, (req, res) => {
   const { item } = req.body;
@@ -157,7 +157,7 @@ urlRoutes.post('/api/addItem', authenticateJWT, (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.post('/api/updateItem', authenticateJWT, (req, res) => {
   const { item } = req.body;
@@ -173,7 +173,7 @@ urlRoutes.post('/api/updateItem', authenticateJWT, (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.post('/api/updateSequence', authenticateJWT, (req, res) => {
   const { items } = req.body;
@@ -186,6 +186,9 @@ urlRoutes.post('/api/updateSequence', authenticateJWT, (req, res) => {
   sse.send(items, 'updateItemSequence');
 });
 
+/**
+ * @deprecated since version 2.0.0
+ */
 urlRoutes.get('/api/deleteAllItems', authenticateJWT, (req, res) => {
   query('DELETE FROM shopping_list', []).then(() => {
     res.json({ success: true });
@@ -223,7 +226,7 @@ urlRoutes.post('/api/search', authenticateJWT, (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.get('/api/getStandardItems', authenticateJWT, (req, res) => {
   query('SELECT * from shopping_list_standard', []).then((results) => {
@@ -233,7 +236,7 @@ urlRoutes.get('/api/getStandardItems', authenticateJWT, (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.post('/api/addStandardItem', authenticateJWT, (req, res) => {
   const { item } = req.body;
@@ -245,7 +248,7 @@ urlRoutes.post('/api/addStandardItem', authenticateJWT, (req, res) => {
 });
 
 /**
- * @deprecated since version 2.0
+ * @deprecated since version 2.0.0
  */
 urlRoutes.post('/api/deleteStandardItem', authenticateJWT, (req, res) => {
   if (req.body.id.isNaN) {
