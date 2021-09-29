@@ -1,6 +1,6 @@
 const express = require('express');
 
-export function createRoutes(controllerName: string) {
+export function createStandardRoutes(controllerName: string) {
   const urlRoutes = express.Router();
 
   // eslint-disable-next-line global-require,import/no-dynamic-require
