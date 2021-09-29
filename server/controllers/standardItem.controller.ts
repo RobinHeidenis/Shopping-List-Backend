@@ -2,6 +2,7 @@ import { StandardItem } from '../models/standardItem.model';
 import { handleDatabaseException } from '../exceptions/database.exception';
 import { handleBadRequestException } from '../exceptions/badRequest.exception';
 import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
+import { Item } from '../models/item.model';
 
 exports.createOneRequest = async (req, res) => {
   const {
@@ -42,6 +43,12 @@ exports.readOneRequest = async (req, res) => {
   } else {
     handleRecordNotFoundException(res);
   }
+};
+
+exports.readAllRequest = async (req, res) => {
+  StandardItem.findAll()
+    .then((standardItems) => res.status(200).send(standardItems))
+    .catch((e) => handleDatabaseException(e, res));
 };
 
 exports.updateOneRequest = async (req, res) => {
@@ -89,8 +96,8 @@ exports.deleteOneRequest = async (req, res) => {
   }
 };
 
-exports.getAllRequest = async (req, res) => {
-  StandardItem.findAll()
-    .then((standardItems) => res.status(200).send(standardItems))
+exports.deleteAllRequest = async (req, res) => {
+  await Item.destroy({ truncate: true })
+    .then(() => res.sendStatus(204))
     .catch((e) => handleDatabaseException(e, res));
 };

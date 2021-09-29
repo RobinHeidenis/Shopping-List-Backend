@@ -2,6 +2,7 @@ import { Category } from '../models/category.model';
 import { handleDatabaseException } from '../exceptions/database.exception';
 import { handleBadRequestException } from '../exceptions/badRequest.exception';
 import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
+import { Item } from '../models/item.model';
 
 exports.createOneRequest = async (req, res) => {
   const { name, color } = req.body;
@@ -32,6 +33,12 @@ exports.readOneRequest = async (req, res) => {
   } else {
     handleRecordNotFoundException(res);
   }
+};
+
+exports.readAllRequest = async (req, res) => {
+  Category.findAll()
+    .then((categories) => res.status(200).send(categories))
+    .catch((e) => handleDatabaseException(e, res));
 };
 
 exports.updateOneRequest = async (req, res) => {
@@ -77,8 +84,8 @@ exports.deleteOneRequest = async (req, res) => {
   }
 };
 
-exports.getAllRequest = async (req, res) => {
-  Category.findAll()
-    .then((categories) => res.status(200).send(categories))
+exports.deleteAllRequest = async (req, res) => {
+  await Item.destroy({ truncate: true })
+    .then(() => res.sendStatus(204))
     .catch((e) => handleDatabaseException(e, res));
 };

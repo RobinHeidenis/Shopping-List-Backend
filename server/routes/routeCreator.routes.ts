@@ -7,9 +7,10 @@ export function createStandardRoutes(controllerName: string) {
   const controller = require(controllerName);
 
   urlRoutes.post('/', controller.createOneRequest);
-  urlRoutes.get('/all', controller.getAllRequest);
+  urlRoutes.get('/all', controller.readAllRequest);
   urlRoutes.get('/:id', controller.readOneRequest);
   urlRoutes.patch('/:id', controller.updateOneRequest);
+  urlRoutes.delete('/all', controller.deleteAllRequest);
   urlRoutes.delete('/:id', controller.deleteOneRequest);
 
   return urlRoutes;
