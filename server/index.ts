@@ -1,4 +1,4 @@
-import { createRoutes } from './routes/routeCreator.routes';
+import { createStandardRoutes } from './routes/routeCreator.routes';
 
 require('dotenv').config();
 const express = require('express');
@@ -21,13 +21,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-const categoryRouter = createRoutes('../controllers/category.controller');
-const itemRouter = createRoutes('../controllers/item.controller');
-const standardItemRouter = createRoutes('../controllers/standardItem.controller');
+const itemRouter = require('./routes/item.routes').routes;
+
+const categoryRouter = createStandardRoutes('../controllers/category.controller');
+const standardItemRouter = createStandardRoutes('../controllers/standardItem.controller');
 
 const deprecatedRoutesRouter = require('./routes/deprecated.routes');
 
-// TODO: incorporate the old api in here, so no breaking changes are forced yet
 app.use('/api/v2/item', itemRouter);
 app.use('/api/v2/category', categoryRouter);
 app.use('/api/v2/standardItem', standardItemRouter);

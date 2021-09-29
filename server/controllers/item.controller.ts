@@ -2,6 +2,8 @@ import { Item } from '../models/item.model';
 import { handleDatabaseException } from '../exceptions/database.exception';
 import { handleBadRequestException } from '../exceptions/badRequest.exception';
 import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
+import { HandledItemInterface } from '../interfaces/item/handledItem.interface';
+import { UpdateSequencesItemInterface } from '../interfaces/item/updateSequencesItem.interface';
 
 exports.createOneRequest = async (req, res) => {
   const {
@@ -96,4 +98,36 @@ exports.getAllRequest = async (req, res) => {
     .catch((e) => handleDatabaseException(e, res));
 };
 
-// todo add separate endpoint for updating sequences
+exports.updateSequences = async (req, res) => {
+  const items: [UpdateSequencesItemInterface] = req.body;
+  const handledItems: Array<HandledItemInterface> = [];
+
+  if (!Array.isArray(items)) {
+    handleBadRequestException(res);
+    return;
+  }
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const item of items) {
+    if (Object.prototype.hasOwnProperty.call(item, 'id')
+      && Object.prototype.hasOwnProperty.call(item, 'sequence')
+    ) {
+      // eslint-disable-next-line no-await-in-loop
+      await Item.findByPk(item.id)
+        .then(async (foundItem) => {
+          if (foundItem) {
+            await foundItem.update({ sequence: item.sequence });
+            handledItems.push({ id: foundItem.id, sequence: foundItem.sequence });
+          } else {
+            handledItems.push({ id: item.id, sequence: item.sequence, error: { key: 'NOT_FOUND', message: 'Item not found' } });
+          }
+        })
+        .catch((e) => { handleDatabaseException(e, res); });
+    } else {
+      handleBadRequestException(res);
+      return;
+    }
+  }
+
+  res.status(200).send(handledItems);
+};
