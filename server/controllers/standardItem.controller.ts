@@ -2,7 +2,6 @@ import { StandardItem } from '../models/standardItem.model';
 import { handleDatabaseException } from '../exceptions/database.exception';
 import { handleBadRequestException } from '../exceptions/badRequest.exception';
 import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
-import { Item } from '../models/item.model';
 
 exports.createOneRequest = async (req, res) => {
   const {
@@ -97,7 +96,7 @@ exports.deleteOneRequest = async (req, res) => {
 };
 
 exports.deleteAllRequest = async (req, res) => {
-  await Item.destroy({ truncate: true })
+  await StandardItem.destroy({ truncate: true })
     .then(() => res.sendStatus(204))
     .catch((e) => handleDatabaseException(e, res));
 };

@@ -14,7 +14,10 @@ export class Category extends Model<CategoryAttributes, CategoryCreationAttribut
   @Column(DataTypes.STRING(10))
   color: string
 
-  @HasMany(() => Item)
+  @HasMany(() => Item, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   items: Item[]
 
   @HasMany(() => StandardItem)
