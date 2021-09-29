@@ -47,6 +47,12 @@ exports.readOneRequest = async (req, res) => {
   }
 };
 
+exports.readAllRequest = async (req, res) => {
+  Item.findAll()
+    .then((items) => res.status(200).send(items))
+    .catch((e) => handleDatabaseException(e, res));
+};
+
 exports.updateOneRequest = async (req, res) => {
   const { id } = req.params;
   const {
@@ -72,33 +78,7 @@ exports.updateOneRequest = async (req, res) => {
   }
 };
 
-exports.deleteOneRequest = async (req, res) => {
-  const { id } = req.params;
-
-  if (!id || !parseInt(id)) {
-    handleBadRequestException(res);
-    return;
-  }
-
-  const foundItem = await Item.findByPk(id)
-    .catch((e) => handleDatabaseException(e, res));
-
-  if (foundItem) {
-    foundItem.destroy()
-      .then(() => res.sendStatus(204))
-      .catch((e) => handleDatabaseException(e, res));
-  } else {
-    handleRecordNotFoundException(res);
-  }
-};
-
-exports.getAllRequest = async (req, res) => {
-  Item.findAll()
-    .then((items) => res.status(200).send(items))
-    .catch((e) => handleDatabaseException(e, res));
-};
-
-exports.updateSequences = async (req, res) => {
+exports.updateSequencesRequest = async (req, res) => {
   const items: [UpdateSequencesItemInterface] = req.body;
   const handledItems: Array<HandledItemInterface> = [];
 
@@ -130,4 +110,30 @@ exports.updateSequences = async (req, res) => {
   }
 
   res.status(200).send(handledItems);
+};
+
+exports.deleteOneRequest = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id || !parseInt(id)) {
+    handleBadRequestException(res);
+    return;
+  }
+
+  const foundItem = await Item.findByPk(id)
+    .catch((e) => handleDatabaseException(e, res));
+
+  if (foundItem) {
+    foundItem.destroy()
+      .then(() => res.sendStatus(204))
+      .catch((e) => handleDatabaseException(e, res));
+  } else {
+    handleRecordNotFoundException(res);
+  }
+};
+
+exports.deleteAllRequest = async (req, res) => {
+  await Item.destroy({ truncate: true })
+    .then(() => res.sendStatus(204))
+    .catch((e) => handleDatabaseException(e, res));
 };

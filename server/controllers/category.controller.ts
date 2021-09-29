@@ -34,6 +34,12 @@ exports.readOneRequest = async (req, res) => {
   }
 };
 
+exports.readAllRequest = async (req, res) => {
+  Category.findAll()
+    .then((categories) => res.status(200).send(categories))
+    .catch((e) => handleDatabaseException(e, res));
+};
+
 exports.updateOneRequest = async (req, res) => {
   const { id } = req.params;
   const { name, color } = req.body;
@@ -77,8 +83,8 @@ exports.deleteOneRequest = async (req, res) => {
   }
 };
 
-exports.getAllRequest = async (req, res) => {
-  Category.findAll()
-    .then((categories) => res.status(200).send(categories))
+exports.deleteAllRequest = async (req, res) => {
+  await Category.destroy({ where: {} })
+    .then(() => res.sendStatus(204))
     .catch((e) => handleDatabaseException(e, res));
 };

@@ -44,6 +44,12 @@ exports.readOneRequest = async (req, res) => {
   }
 };
 
+exports.readAllRequest = async (req, res) => {
+  StandardItem.findAll()
+    .then((standardItems) => res.status(200).send(standardItems))
+    .catch((e) => handleDatabaseException(e, res));
+};
+
 exports.updateOneRequest = async (req, res) => {
   const { id } = req.params;
   const {
@@ -89,8 +95,8 @@ exports.deleteOneRequest = async (req, res) => {
   }
 };
 
-exports.getAllRequest = async (req, res) => {
-  StandardItem.findAll()
-    .then((standardItems) => res.status(200).send(standardItems))
+exports.deleteAllRequest = async (req, res) => {
+  await StandardItem.destroy({ truncate: true })
+    .then(() => res.sendStatus(204))
     .catch((e) => handleDatabaseException(e, res));
 };
