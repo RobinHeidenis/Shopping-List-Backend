@@ -2,4 +2,9 @@ export type EventType =
   'category.create' |
   'category.update' |
   'category.delete' |
-  'category.deleteAll';
+  'category.deleteAll' |
+  'item.create' |
+  'item.update' |
+  'item.updateSequences' |
+  'item.delete' |
+  'item.deleteAll';
