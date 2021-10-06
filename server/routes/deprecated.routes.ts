@@ -9,7 +9,7 @@ const express = require('express');
 
 const urlRoutes = express.Router();
 const jwt = require('jsonwebtoken');
-const _fetch = require('node-fetch');
+const fetch = require('node-fetch');
 
 const SSE = require('express-sse');
 
@@ -44,7 +44,7 @@ const authenticateJWT = (req, res, next) => {
 urlRoutes.get('/events', sse.init);
 
 urlRoutes.post('/api/login', (req, res) => {
-  _fetch('http://localhost:3002/login', {
+  fetch('http://localhost:3002/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -197,7 +197,7 @@ urlRoutes.get('/api/deleteAllItems', authenticateJWT, (req, res) => {
 });
 
 urlRoutes.post('/api/search', authenticateJWT, (req, res) => {
-  _fetch(`https://ah.nl/zoeken?query=${req.body.query}&PageSpeed=noscript`).then((result) => result.text().then((result) => {
+  fetch(`https://ah.nl/zoeken?query=${req.body.query}&PageSpeed=noscript`).then((result) => result.text().then((result) => {
     const patternScript = /window\.__INITIAL_STATE__= (.*?)\n {2}window.initialViewport='DESKTOP'\n/gs;
     const patternUndefined = /undefined/g;
 
