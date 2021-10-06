@@ -196,6 +196,9 @@ urlRoutes.get('/api/deleteAllItems', authenticateJWT, (req, res) => {
   });
 });
 
+/**
+ * @deprecated since version 2.0.0
+ */
 urlRoutes.post('/api/search', authenticateJWT, (req, res) => {
   fetch(`https://ah.nl/zoeken?query=${req.body.query}&PageSpeed=noscript`).then((result) => result.text().then((result) => {
     const patternScript = /window\.__INITIAL_STATE__= (.*?)\n {2}window.initialViewport='DESKTOP'\n/gs;
