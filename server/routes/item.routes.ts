@@ -4,4 +4,4 @@ const controller = require('../controllers/item.controller');
 
 const router = createStandardRoutes('../controllers/item.controller');
 router.post('/sequences', controller.updateSequencesRequest);
-exports.routes = router;
+module.exports = router;
