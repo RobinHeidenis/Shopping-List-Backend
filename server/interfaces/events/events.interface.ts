@@ -7,4 +7,8 @@ export type EventType =
   'item.update' |
   'item.updateSequences' |
   'item.delete' |
-  'item.deleteAll';
+  'item.deleteAll' |
+  'standardItem.create' |
+  'standardItem.update' |
+  'standardItem.delete' |
+  'standardItem.deleteAll';

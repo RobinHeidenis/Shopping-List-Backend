@@ -2,6 +2,7 @@ import { StandardItem } from '../models/standardItem.model';
 import { handleDatabaseException } from '../exceptions/database.exception';
 import { handleBadRequestException } from '../exceptions/badRequest.exception';
 import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
+import { sendSSEMessage } from './events.controller';
 
 exports.createOneRequest = async (req, res) => {
   const {
@@ -22,7 +23,10 @@ exports.createOneRequest = async (req, res) => {
   StandardItem.create({
     name, quantity, url, categoryId: catId,
   })
-    .then((item) => res.status(201).json(item))
+    .then((standardItem) => {
+      sendSSEMessage(standardItem, 'standardItem.create', req.session.id);
+      res.status(201).json(standardItem);
+    })
     .catch((e) => handleDatabaseException(e, res));
 };
 
@@ -68,7 +72,10 @@ exports.updateOneRequest = async (req, res) => {
     foundStandardItem.update({
       name, quantity, url,
     })
-      .then((standardItem) => res.status(200).json(standardItem))
+      .then((standardItem) => {
+        sendSSEMessage(standardItem, 'standardItem.update', req.session.id);
+        res.status(200).json(standardItem);
+      })
       .catch((e) => handleDatabaseException(e, res));
   } else {
     handleRecordNotFoundException(res);
@@ -88,7 +95,10 @@ exports.deleteOneRequest = async (req, res) => {
 
   if (foundStandardItem) {
     foundStandardItem.destroy()
-      .then(() => res.sendStatus(204))
+      .then(() => {
+        sendSSEMessage(foundStandardItem.id, 'standardItem.delete', req.session.id);
+        res.sendStatus(204);
+      })
       .catch((e) => handleDatabaseException(e, res));
   } else {
     handleRecordNotFoundException(res);
@@ -97,6 +107,9 @@ exports.deleteOneRequest = async (req, res) => {
 
 exports.deleteAllRequest = async (req, res) => {
   await StandardItem.destroy({ truncate: true })
-    .then(() => res.sendStatus(204))
+    .then(() => {
+      sendSSEMessage('', 'standardItem.deleteAll', req.session.id);
+      res.sendStatus(204);
+    })
     .catch((e) => handleDatabaseException(e, res));
 };
