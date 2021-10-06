@@ -4,6 +4,7 @@ import { handleBadRequestException } from '../exceptions/badRequest.exception';
 import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
 import { HandledItemInterface } from '../interfaces/item/handledItem.interface';
 import { UpdateSequencesItemInterface } from '../interfaces/item/updateSequencesItem.interface';
+import { sendSSEMessage } from './events.controller';
 
 exports.createOneRequest = async (req, res) => {
   const {
@@ -25,7 +26,10 @@ exports.createOneRequest = async (req, res) => {
   Item.create({
     name, quantity, url, sequence: numItems + 1, categoryId: catId,
   })
-    .then((item) => res.status(201).json(item))
+    .then((item) => {
+      sendSSEMessage(item, 'item.create', req.session.id);
+      res.status(201).json(item);
+    })
     .catch((e) => handleDatabaseException(e, res));
 };
 
@@ -71,7 +75,10 @@ exports.updateOneRequest = async (req, res) => {
     foundItem.update({
       name, quantity, url, status,
     })
-      .then((item) => res.status(200).json(item))
+      .then((item) => {
+        sendSSEMessage(item, 'item.update', req.session.id);
+        res.status(200).json(item);
+      })
       .catch((e) => handleDatabaseException(e, res));
   } else {
     handleRecordNotFoundException(res);
@@ -109,6 +116,7 @@ exports.updateSequencesRequest = async (req, res) => {
     }
   }
 
+  sendSSEMessage(handledItems, 'item.updateSequences', req.session.id);
   res.status(200).send(handledItems);
 };
 
@@ -125,7 +133,10 @@ exports.deleteOneRequest = async (req, res) => {
 
   if (foundItem) {
     foundItem.destroy()
-      .then(() => res.sendStatus(204))
+      .then(() => {
+        sendSSEMessage(foundItem.id, 'item.delete', req.session.id);
+        res.sendStatus(204);
+      })
       .catch((e) => handleDatabaseException(e, res));
   } else {
     handleRecordNotFoundException(res);
@@ -134,6 +145,9 @@ exports.deleteOneRequest = async (req, res) => {
 
 exports.deleteAllRequest = async (req, res) => {
   await Item.destroy({ truncate: true })
-    .then(() => res.sendStatus(204))
+    .then(() => {
+      sendSSEMessage('', 'item.deleteAll', req.session.id);
+      res.sendStatus(204);
+    })
     .catch((e) => handleDatabaseException(e, res));
 };

@@ -21,7 +21,7 @@ const options = {
   createDatabaseTable: true,
 };
 
-const sessionStore = new MySQLStore(options);
+export const sessionStore = new MySQLStore(options);
 
 const sess = {
   secret: process.env.accessTokenSecret,

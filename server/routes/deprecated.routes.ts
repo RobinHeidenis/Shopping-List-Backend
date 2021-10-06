@@ -41,6 +41,9 @@ const authenticateJWT = (req, res, next) => {
   }
 };
 
+/**
+ * @deprecated since version 2.0.0
+ */
 urlRoutes.get('/events', sse.init);
 
 urlRoutes.post('/api/login', (req, res) => {

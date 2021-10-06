@@ -1,3 +1,5 @@
+import { EventType } from '../interfaces/events/events.interface';
+
 const connectedClients = new Map();
 
 exports.events = (req, res) => {
@@ -15,7 +17,7 @@ exports.events = (req, res) => {
   res.flush();
 };
 
-export function sendMessage(data, event, sender) {
+export function sendSSEMessage(data: any, event: EventType, sender: string) {
   connectedClients.forEach((res, sessionId) => {
     if (sessionId === sender) return;
     res.write(`id: ${Date.now()}\n`);
