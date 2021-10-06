@@ -1,12 +1,13 @@
 import { sequelize } from '../../../server/db';
 import { seedDatabase } from '../../../server/seeders/seeder';
-import { app } from '../../../server';
+import { app, sessionStore } from '../../../server';
 import { StandardItem } from '../../../server/models/standardItem.model';
 
 const request = require('supertest');
 
 afterAll(async () => {
   await sequelize.close();
+  sessionStore.close();
 });
 
 beforeEach(async () => {
