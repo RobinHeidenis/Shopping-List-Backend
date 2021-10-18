@@ -1,25 +1,29 @@
+import { Column, HasMany, Model, Table } from "sequelize-typescript";
+import { DataTypes } from "sequelize";
 import {
-  Column, HasMany, Model, Table,
-} from 'sequelize-typescript';
-import { DataTypes } from 'sequelize';
-import { CategoryAttributes, CategoryCreationAttributes } from '../types/category.type';
-import { Item } from './item.model';
-import { StandardItem } from './standardItem.model';
+  CategoryAttributes,
+  CategoryCreationAttributes,
+} from "../types/category.type";
+import { Item } from "./item.model";
+import { StandardItem } from "./standardItem.model";
 
 @Table
-export class Category extends Model<CategoryAttributes, CategoryCreationAttributes> {
+export class Category extends Model<
+  CategoryAttributes,
+  CategoryCreationAttributes
+> {
   @Column
-  name: string
+  name: string;
 
   @Column(DataTypes.STRING(10))
-  color: string
+  color: string;
 
   @HasMany(() => Item, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
   })
-  items: Item[]
+  items: Item[];
 
   @HasMany(() => StandardItem)
-  standardItems: StandardItem[]
+  standardItems: StandardItem[];
 }

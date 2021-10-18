@@ -1,5 +1,5 @@
-import { Optional } from 'sequelize/types';
-import { CategoryAttributes } from './category.type';
+import { Optional } from "sequelize/types";
+import { CategoryAttributes } from "./category.type";
 
 export interface StandardItemAttributes {
   id: number;
@@ -11,4 +11,7 @@ export interface StandardItemAttributes {
 }
 
 export interface StandardItemsCreationAttributes
-  extends Optional<StandardItemAttributes, 'id' | 'quantity' | 'url' | 'category'> {}
+  extends Optional<
+    StandardItemAttributes,
+    "id" | "quantity" | "url" | "category"
+  > {}
