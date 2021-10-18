@@ -6,33 +6,36 @@ import {
   ForeignKey,
   Model,
   Table,
-} from 'sequelize-typescript';
-import { DataTypes } from 'sequelize';
-import { Category } from './category.model';
+} from "sequelize-typescript";
+import { DataTypes } from "sequelize";
+import { Category } from "./category.model";
 import {
   StandardItemAttributes,
   StandardItemsCreationAttributes,
-} from '../types/standardItem.type';
+} from "../types/standardItem.type";
 
 @Table
-export class StandardItem extends Model<StandardItemAttributes, StandardItemsCreationAttributes> {
+export class StandardItem extends Model<
+  StandardItemAttributes,
+  StandardItemsCreationAttributes
+> {
   @AllowNull(false)
   @Column
-  name: string
+  name: string;
 
   @AllowNull
   @Column(DataTypes.STRING(15))
-  quantity: string
+  quantity: string;
 
   @AllowNull
   @Column(DataTypes.STRING(500))
-  url: string
+  url: string;
 
   @Default(1)
   @ForeignKey(() => Category)
   @Column
-  categoryId: number
+  categoryId: number;
 
   @BelongsTo(() => Category)
-  category: Category
+  category: Category;
 }

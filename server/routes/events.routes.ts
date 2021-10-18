@@ -1,11 +1,11 @@
 export {};
 
-const express = require('express');
+const express = require("express");
 
 const urlRoutes = express.Router();
 
-const controller = require('../controllers/events.controller');
+const controller = require("../controllers/events.controller");
 
-urlRoutes.get('/', controller.events);
+urlRoutes.get("/", controller.events);
 
 module.exports = urlRoutes;
