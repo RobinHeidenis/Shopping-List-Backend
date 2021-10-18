@@ -1,4 +1,4 @@
-import { Optional } from 'sequelize/types';
+import { Optional } from "sequelize/types";
 
 export interface CategoryAttributes {
   id: number;
@@ -7,4 +7,4 @@ export interface CategoryAttributes {
 }
 
 export interface CategoryCreationAttributes
-  extends Optional<CategoryAttributes, 'id'> {}
+  extends Optional<CategoryAttributes, "id"> {}

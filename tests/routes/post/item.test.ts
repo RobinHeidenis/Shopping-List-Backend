@@ -1,11 +1,12 @@
-import { sequelize } from '../../../server/db';
-import { seedDatabase } from '../../../server/seeders/seeder';
-import { app } from '../../../server';
+import { sequelize } from "../../../server/db";
+import { seedDatabase } from "../../../server/seeders/seeder";
+import { app, sessionStore } from "../../../server";
 
-const request = require('supertest');
+const request = require("supertest");
 
 afterAll(async () => {
   await sequelize.close();
+  sessionStore.close();
 });
 
 beforeEach(async () => {
@@ -13,81 +14,68 @@ beforeEach(async () => {
   await seedDatabase();
 });
 
-describe('Item POST endpoint success', () => {
-  it('should create a new item', async () => {
-    const res = await request(app)
-      .post('/api/v2/item')
-      .send({
-        name: 'test1',
-        categoryId: '1',
-      });
+describe("Item POST endpoint success", () => {
+  it("should create a new item", async () => {
+    const res = await request(app).post("/api/v2/item").send({
+      name: "test1",
+      categoryId: "1",
+    });
     expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty('id');
+    expect(res.body).toHaveProperty("id");
     expect(res.body.id).toEqual(1);
   });
 });
 
-describe('Item POST endpoint failure', () => {
-  it('should not accept the item creation request, as name is missing', async () => {
-    const res = await request(app)
-      .post('/api/v2/item')
-      .send({
-        url: 'test',
-        quantity: 'test',
-        categoryId: 1,
-      });
+describe("Item POST endpoint failure", () => {
+  it("should not accept the item creation request, as name is missing", async () => {
+    const res = await request(app).post("/api/v2/item").send({
+      url: "test",
+      quantity: "test",
+      categoryId: 1,
+    });
     expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty('error');
+    expect(res.body).toHaveProperty("error");
   });
 
-  it('should not accept the item creation request, as categoryId is missing', async () => {
-    const res = await request(app)
-      .post('/api/v2/item')
-      .send({
-        name: 'test',
-        url: 'test',
-        quantity: 'test',
-      });
+  it("should not accept the item creation request, as categoryId is missing", async () => {
+    const res = await request(app).post("/api/v2/item").send({
+      name: "test",
+      url: "test",
+      quantity: "test",
+    });
     expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty('error');
+    expect(res.body).toHaveProperty("error");
   });
 
-  it('should not accept the item creation request, as multiple properties are missing', async () => {
-    const res = await request(app)
-      .post('/api/v2/item')
-      .send({
-        url: 'test',
-        quantity: 'test',
-      });
+  it("should not accept the item creation request, as multiple properties are missing", async () => {
+    const res = await request(app).post("/api/v2/item").send({
+      url: "test",
+      quantity: "test",
+    });
     expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty('error');
+    expect(res.body).toHaveProperty("error");
   });
 
-  it('should not accept the item creation request, as categoryId is not a number', async () => {
-    const res = await request(app)
-      .post('/api/v2/item')
-      .send({
-        name: 'test',
-        categoryId: 'NotANumber',
-      });
+  it("should not accept the item creation request, as categoryId is not a number", async () => {
+    const res = await request(app).post("/api/v2/item").send({
+      name: "test",
+      categoryId: "NotANumber",
+    });
     expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty('error');
+    expect(res.body).toHaveProperty("error");
   });
 
-  it('should return a database failure, as the categoryId provided does not exist', async () => {
-    const res = await request(app)
-      .post('/api/v2/item')
-      .send({
-        name: 'test',
-        categoryId: 3,
-      });
+  it("should return a database failure, as the categoryId provided does not exist", async () => {
+    const res = await request(app).post("/api/v2/item").send({
+      name: "test",
+      categoryId: 3,
+    });
     expect(res.statusCode).toEqual(500);
-    expect(res.body).toHaveProperty('error');
+    expect(res.body).toHaveProperty("error");
   });
 
-  it('should fail to find the item route, as it is not available for POST', async () => {
-    const res = await request(app)
-      .post('/api/v2/item/1');
+  it("should fail to find the item route, as it is not available for POST", async () => {
+    const res = await request(app).post("/api/v2/item/1");
     expect(res.statusCode).toEqual(404);
   });
 });

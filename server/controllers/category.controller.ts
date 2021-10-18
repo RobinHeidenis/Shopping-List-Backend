@@ -1,7 +1,8 @@
-import { Category } from '../models/category.model';
-import { handleDatabaseException } from '../exceptions/database.exception';
-import { handleBadRequestException } from '../exceptions/badRequest.exception';
-import { handleRecordNotFoundException } from '../exceptions/recordNotFound.exception';
+import { Category } from "../models/category.model";
+import { handleDatabaseException } from "../exceptions/database.exception";
+import { handleBadRequestException } from "../exceptions/badRequest.exception";
+import { handleRecordNotFoundException } from "../exceptions/recordNotFound.exception";
+import { sendSSEMessage } from "./events.controller";
 
 exports.createOneRequest = async (req, res) => {
   const { name, color } = req.body;
@@ -12,7 +13,10 @@ exports.createOneRequest = async (req, res) => {
   }
 
   Category.create({ name, color })
-    .then((category) => res.status(201).json(category))
+    .then((category) => {
+      sendSSEMessage(category, "category.create", req.session.id);
+      res.status(201).json(category);
+    })
     .catch((e) => handleDatabaseException(e, res));
 };
 
@@ -24,14 +28,21 @@ exports.readOneRequest = async (req, res) => {
     return;
   }
 
-  const foundCategory = await Category.findByPk(id)
-    .catch((e) => handleDatabaseException(e, res));
+  const foundCategory = await Category.findByPk(id).catch((e) =>
+    handleDatabaseException(e, res)
+  );
 
   if (foundCategory) {
     res.status(200).json(foundCategory);
   } else {
     handleRecordNotFoundException(res);
   }
+};
+
+exports.readAllRequest = async (req, res) => {
+  Category.findAll()
+    .then((categories) => res.status(200).send(categories))
+    .catch((e) => handleDatabaseException(e, res));
 };
 
 exports.updateOneRequest = async (req, res) => {
@@ -43,14 +54,20 @@ exports.updateOneRequest = async (req, res) => {
     return;
   }
 
-  const foundCategory = await Category.findByPk(id)
-    .catch((e) => handleDatabaseException(e, res));
+  const foundCategory = await Category.findByPk(id).catch((e) =>
+    handleDatabaseException(e, res)
+  );
 
   if (foundCategory) {
-    foundCategory.update({
-      name, color,
-    })
-      .then((category) => res.status(200).json(category))
+    foundCategory
+      .update({
+        name,
+        color,
+      })
+      .then((category) => {
+        sendSSEMessage(category, "category.update", req.session.id);
+        res.status(200).json(category);
+      })
       .catch((e) => handleDatabaseException(e, res));
   } else {
     handleRecordNotFoundException(res);
@@ -65,20 +82,28 @@ exports.deleteOneRequest = async (req, res) => {
     return;
   }
 
-  const foundCategory = await Category.findByPk(id)
-    .catch((e) => handleDatabaseException(e, res));
+  const foundCategory = await Category.findByPk(id).catch((e) =>
+    handleDatabaseException(e, res)
+  );
 
   if (foundCategory) {
-    foundCategory.destroy()
-      .then(() => res.sendStatus(204))
+    foundCategory
+      .destroy()
+      .then(() => {
+        sendSSEMessage(foundCategory.id, "category.delete", req.session.id);
+        res.sendStatus(204);
+      })
       .catch((e) => handleDatabaseException(e, res));
   } else {
     handleRecordNotFoundException(res);
   }
 };
 
-exports.getAllRequest = async (req, res) => {
-  Category.findAll()
-    .then((categories) => res.status(200).send(categories))
+exports.deleteAllRequest = async (req, res) => {
+  await Category.destroy({ where: {} })
+    .then(() => {
+      sendSSEMessage("", "category.deleteAll", req.session.id);
+      res.sendStatus(204);
+    })
     .catch((e) => handleDatabaseException(e, res));
 };

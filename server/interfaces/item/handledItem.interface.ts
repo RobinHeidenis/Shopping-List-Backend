@@ -4,5 +4,5 @@ export interface HandledItemInterface {
   error?: {
     key: string;
     message: string;
-  }
+  };
 }

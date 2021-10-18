@@ -1,9 +1,9 @@
-import { ServerlessMysql } from 'serverless-mysql';
+import { ServerlessMysql } from "serverless-mysql";
 
-require('dotenv').config();
+require("dotenv").config();
 
-const db: ServerlessMysql = require('serverless-mysql')({
-  backoff: 'decorrelated',
+const db: ServerlessMysql = require("serverless-mysql")({
+  backoff: "decorrelated",
   base: 5,
   cap: 200,
   config: {

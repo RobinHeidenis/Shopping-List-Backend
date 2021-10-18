@@ -1,16 +1,21 @@
-const express = require('express');
+import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
+
+const express = require("express");
 
 export function createStandardRoutes(controllerName: string) {
-  const urlRoutes = express.Router();
+  const router = express.Router();
 
   // eslint-disable-next-line global-require,import/no-dynamic-require
   const controller = require(controllerName);
 
-  urlRoutes.post('/', controller.createOneRequest);
-  urlRoutes.get('/all', controller.getAllRequest);
-  urlRoutes.get('/:id', controller.readOneRequest);
-  urlRoutes.patch('/:id', controller.updateOneRequest);
-  urlRoutes.delete('/:id', controller.deleteOneRequest);
+  router.use(authenticateJWTMiddleware);
 
-  return urlRoutes;
+  router.post("/", controller.createOneRequest);
+  router.get("/all", controller.readAllRequest);
+  router.get("/:id", controller.readOneRequest);
+  router.patch("/:id", controller.updateOneRequest);
+  router.delete("/all", controller.deleteAllRequest);
+  router.delete("/:id", controller.deleteOneRequest);
+
+  return router;
 }
