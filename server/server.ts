@@ -6,6 +6,7 @@ const PORT = 3001;
 
 export const server = app.listen(PORT, async () => {
   Logger.info(`Shopping list backend listening at http://localhost:${PORT}`);
+  // TODO: implement auth server ping
   await DBInit();
 });
 

@@ -1,9 +1,13 @@
+import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
+
 const express = require("express");
 
-const urlRoutes = express.Router();
+const router = express.Router();
 
 const controller = require("../controllers/search.controller");
 
-urlRoutes.get("/:query", controller.search);
+router.use(authenticateJWTMiddleware);
 
-module.exports = urlRoutes;
+router.get("/:query", controller.search);
+
+module.exports = router;

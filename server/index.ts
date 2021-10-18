@@ -57,6 +57,8 @@ const searchRouter = require("./routes/search.routes");
 
 const eventsRouter = require("./routes/events.routes");
 
+const authenticationRouter = require("./routes/authentication.routes");
+
 const categoryRouter = createStandardRoutes(
   "../controllers/category.controller"
 );
@@ -71,4 +73,5 @@ app.use("/api/v2/category", categoryRouter);
 app.use("/api/v2/standardItem", standardItemRouter);
 app.use("/api/v2/search", searchRouter);
 app.use("/api/v2/events", eventsRouter);
+app.use("/api/v2/authentication", authenticationRouter);
 app.use("", deprecatedRoutesRouter);
