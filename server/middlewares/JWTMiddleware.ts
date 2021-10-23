@@ -1,24 +1,32 @@
-import { Logger } from "../logging/logger";
-import { handleUnauthorizedException } from "../exceptions/unauthorized.exception";
+import { NextFunction, Request, Response } from "express";
+
+import jwt, { Secret, VerifyErrors } from "jsonwebtoken";
 import { handleNoTokenException } from "../exceptions/noToken.exception";
+import { handleUnauthorizedException } from "../exceptions/unauthorized.exception";
+import { Logger } from "../logging/logger";
 
-const jwt = require("jsonwebtoken");
-
-export const authenticateJWTMiddleware = (req, res, next) => {
+export const authenticateJWTMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
     const token = authHeader.split(" ")[1];
 
-    jwt.verify(token, process.env.accessTokenSecret, (err, user) => {
-      if (err) {
-        Logger.error(err);
-        handleUnauthorizedException(res);
-        return;
+    jwt.verify(
+      token,
+      process.env.accessTokenSecret as Secret,
+      (err: VerifyErrors | null) => {
+        if (err) {
+          Logger.error(err);
+          handleUnauthorizedException(res);
+          return;
+        }
+        next();
       }
-      req.user = user;
-      next();
-    });
+    );
   } else {
     handleNoTokenException(res);
   }

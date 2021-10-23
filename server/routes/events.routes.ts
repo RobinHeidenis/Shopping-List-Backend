@@ -1,15 +1,9 @@
+import express = require("express");
+import controller = require("../controllers/events.controller");
 import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
 
-export {};
+export const eventsRouter = express.Router();
 
-const express = require("express");
+eventsRouter.use(authenticateJWTMiddleware);
 
-const router = express.Router();
-
-const controller = require("../controllers/events.controller");
-
-router.use(authenticateJWTMiddleware);
-
-router.get("/", controller.events);
-
-module.exports = router;
+eventsRouter.get("/", controller.events);

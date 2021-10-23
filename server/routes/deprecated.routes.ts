@@ -1,4 +1,6 @@
 // noinspection SqlResolve
+/* eslint-disable */
+// @ts-nocheck
 
 import { Category, InsertQueryResult, SearchItem } from "../../interfaces";
 import { query } from "../../utils/db";
@@ -336,4 +338,4 @@ urlRoutes.post("/api/deleteStandardItem", authenticateJWT, (req, res) => {
     .catch((reason) => Logger.error(reason));
 });
 
-module.exports = urlRoutes;
+export { urlRoutes };

@@ -1,18 +1,28 @@
+import { Application } from "express";
+import { SessionOptions } from "express-session";
+import helmet from "helmet";
+import dotenv = require("dotenv");
+import express = require("express");
+import MySqlSessionStore = require("express-mysql-session");
+import { authenticationRouter } from "./routes/authentication.routes";
+import { urlRoutes as deprecatedRoutesRouter } from "./routes/deprecated.routes";
+import { eventsRouter } from "./routes/events.routes";
+import { itemRouter } from "./routes/item.routes";
 import { createStandardRoutes } from "./routes/routeCreator.routes";
+import { searchRouter } from "./routes/search.routes";
 
-require("dotenv").config();
-const express = require("express");
-
-export const app = express();
-const bodyParser = require("body-parser");
-const compression = require("compression");
-const helmet = require("helmet");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const compression = require("compression");
 const session = require("express-session");
-const MySQLStore = require("express-mysql-session")(session);
 
-const options = {
+dotenv.config();
+
+export const app: Application = express();
+
+const MysqlStore = MySqlSessionStore(session);
+
+const sessionStoreOptions: MySqlSessionStore.Options = {
   host: process.env.DB_IP,
   port: 3306,
   user: process.env.DB_USERNAME,
@@ -21,24 +31,27 @@ const options = {
   createDatabaseTable: true,
 };
 
-export const sessionStore = new MySQLStore(options);
+export const sessionStore = new MysqlStore(sessionStoreOptions);
 
-const sess = {
-  secret: process.env.accessTokenSecret,
+const sessionOptions: SessionOptions = {
+  secret: process.env.accessTokenSecret || "",
   store: sessionStore,
   resave: false,
   cookie: {
     secure: false,
   },
   saveUninitialized: true,
+  name: "sessionId",
 };
 
 if (app.get("env") === "production") {
-  app.set("trust proxy", 1); // trust first proxy
-  sess.cookie.secure = true; // serve secure cookies
+  app.set("trust proxy", 1);
+  if (sessionOptions && sessionOptions.cookie) {
+    sessionOptions.cookie.secure = true;
+  }
 }
 
-app.use(session(sess));
+app.use(session(sessionOptions));
 
 const corsOptions = {
   origin: "*",
@@ -46,27 +59,18 @@ const corsOptions = {
 
 app.use(compression());
 app.use(helmet());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-const itemRouter = require("./routes/item.routes");
-
-const searchRouter = require("./routes/search.routes");
-
-const eventsRouter = require("./routes/events.routes");
-
-const authenticationRouter = require("./routes/authentication.routes");
-
+// TODO: place these in their own files for consistency
 const categoryRouter = createStandardRoutes(
   "../controllers/category.controller"
 );
 const standardItemRouter = createStandardRoutes(
   "../controllers/standardItem.controller"
 );
-
-const deprecatedRoutesRouter = require("./routes/deprecated.routes");
 
 app.use("/api/v2/item", itemRouter);
 app.use("/api/v2/category", categoryRouter);

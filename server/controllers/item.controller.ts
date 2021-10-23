@@ -1,12 +1,13 @@
-import { Item } from "../models/item.model";
-import { handleDatabaseException } from "../exceptions/database.exception";
+import { Request, Response } from "express";
 import { handleBadRequestException } from "../exceptions/badRequest.exception";
+import { handleDatabaseException } from "../exceptions/database.exception";
 import { handleRecordNotFoundException } from "../exceptions/recordNotFound.exception";
 import { HandledItemInterface } from "../interfaces/item/handledItem.interface";
 import { UpdateSequencesItemInterface } from "../interfaces/item/updateSequencesItem.interface";
+import { Item } from "../models/item.model";
 import { sendSSEMessage } from "./events.controller";
 
-exports.createOneRequest = async (req, res) => {
+const createOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { name, quantity, url, categoryId } = req.body;
 
   if (!name || !categoryId || !parseInt(categoryId)) {
@@ -32,7 +33,7 @@ exports.createOneRequest = async (req, res) => {
     .catch((e) => handleDatabaseException(e, res));
 };
 
-exports.readOneRequest = async (req, res) => {
+const readOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
   if (!id || !parseInt(id)) {
@@ -51,13 +52,13 @@ exports.readOneRequest = async (req, res) => {
   }
 };
 
-exports.readAllRequest = async (req, res) => {
+const readAllRequest = async (req: Request, res: Response): Promise<void> => {
   Item.findAll()
     .then((items) => res.status(200).send(items))
     .catch((e) => handleDatabaseException(e, res));
 };
 
-exports.updateOneRequest = async (req, res) => {
+const updateOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const { name, quantity, url, status } = req.body;
 
@@ -88,7 +89,10 @@ exports.updateOneRequest = async (req, res) => {
   }
 };
 
-exports.updateSequencesRequest = async (req, res) => {
+const updateSequencesRequest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const items: [UpdateSequencesItemInterface] = req.body;
   const handledItems: Array<HandledItemInterface> = [];
 
@@ -116,7 +120,10 @@ exports.updateSequencesRequest = async (req, res) => {
             handledItems.push({
               id: item.id,
               sequence: item.sequence,
-              error: { key: "NOT_FOUND", message: "Item not found" },
+              error: {
+                key: "NOT_FOUND",
+                message: "Item not found",
+              },
             });
           }
         })
@@ -133,7 +140,7 @@ exports.updateSequencesRequest = async (req, res) => {
   res.status(200).send(handledItems);
 };
 
-exports.deleteOneRequest = async (req, res) => {
+const deleteOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
   if (!id || !parseInt(id)) {
@@ -158,11 +165,21 @@ exports.deleteOneRequest = async (req, res) => {
   }
 };
 
-exports.deleteAllRequest = async (req, res) => {
+const deleteAllRequest = async (req: Request, res: Response): Promise<void> => {
   await Item.destroy({ truncate: true })
     .then(() => {
       sendSSEMessage("", "item.deleteAll", req.session.id);
       res.sendStatus(204);
     })
     .catch((e) => handleDatabaseException(e, res));
+};
+
+export {
+  createOneRequest,
+  readOneRequest,
+  readAllRequest,
+  updateOneRequest,
+  updateSequencesRequest,
+  deleteOneRequest,
+  deleteAllRequest,
 };

@@ -1,13 +1,9 @@
+import express = require("express");
+import controller = require("../controllers/search.controller");
 import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
 
-const express = require("express");
+export const searchRouter = express.Router();
 
-const router = express.Router();
+searchRouter.use(authenticateJWTMiddleware);
 
-const controller = require("../controllers/search.controller");
-
-router.use(authenticateJWTMiddleware);
-
-router.get("/:query", controller.search);
-
-module.exports = router;
+searchRouter.get("/:query", controller.search);

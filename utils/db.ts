@@ -14,12 +14,12 @@ const db: ServerlessMysql = require("serverless-mysql")({
   },
 });
 
-export const query = async (q: string, values: any[]) => {
+export const query = async (q: string, values: any[]): Promise<any> => {
   try {
     const results = await db.query(q, values);
     await db.end();
     return results;
-  } catch (e) {
+  } catch (e: any) {
     throw Error(e.message);
   }
 };

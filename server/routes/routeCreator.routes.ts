@@ -1,8 +1,8 @@
+import { Router } from "express";
+import express = require("express");
 import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
 
-const express = require("express");
-
-export function createStandardRoutes(controllerName: string) {
+export function createStandardRoutes(controllerName: string): Router {
   const router = express.Router();
 
   // eslint-disable-next-line global-require,import/no-dynamic-require

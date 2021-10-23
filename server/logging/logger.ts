@@ -1,9 +1,9 @@
-import * as chalk from "chalk";
+import chalk from "chalk";
 
 export class Logger {
   private static isTestMode: boolean = process.env.NODE_ENV === "test";
 
-  static info(message: string) {
+  static info(message: string): void {
     if (this.isTestMode) return;
     const now = new Date(Date.now());
     console.log(
@@ -13,7 +13,7 @@ export class Logger {
     );
   }
 
-  static success(message: string) {
+  static success(message: string): void {
     if (this.isTestMode) return;
     const now = new Date(Date.now());
     console.log(
@@ -23,7 +23,7 @@ export class Logger {
     );
   }
 
-  static warn(message: string) {
+  static warn(message: string): void {
     if (this.isTestMode) return;
     const now = new Date(Date.now());
     console.log(
@@ -33,7 +33,7 @@ export class Logger {
     );
   }
 
-  static error(message: string) {
+  static error(message: string | Error): void {
     if (this.isTestMode) return;
     const now = new Date(Date.now());
     console.log(
@@ -43,7 +43,7 @@ export class Logger {
     );
   }
 
-  static query(message: string) {
+  static query(message: string): void {
     if (this.isTestMode) return;
     const now = new Date(Date.now());
     console.log(
