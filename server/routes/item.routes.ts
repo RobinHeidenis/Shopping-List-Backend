@@ -1,12 +1,11 @@
-import { createStandardRoutes } from "./routeCreator.routes";
 import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
+import { createStandardRoutes } from "./routeCreator.routes";
+import controller = require("../controllers/item.controller");
 
-const controller = require("../controllers/item.controller");
+export const itemRouter = createStandardRoutes(
+  "../controllers/item.controller"
+);
 
-const router = createStandardRoutes("../controllers/item.controller");
+itemRouter.use(authenticateJWTMiddleware);
 
-router.use(authenticateJWTMiddleware);
-
-router.post("/sequences", controller.updateSequencesRequest);
-
-module.exports = router;
+itemRouter.post("/sequences", controller.updateSequencesRequest);
