@@ -1,15 +1,15 @@
-import { Application } from "express";
+import express, { Application } from "express";
 import { SessionOptions } from "express-session";
 import helmet from "helmet";
 import dotenv = require("dotenv");
-import express = require("express");
 import MySqlSessionStore = require("express-mysql-session");
 import { authenticationRouter } from "./routes/authentication.routes";
+import { categoryRouter } from "./routes/category.routes";
 import { urlRoutes as deprecatedRoutesRouter } from "./routes/deprecated.routes";
 import { eventsRouter } from "./routes/events.routes";
 import { itemRouter } from "./routes/item.routes";
-import { createStandardRoutes } from "./routes/routeCreator.routes";
 import { searchRouter } from "./routes/search.routes";
+import { standardItemRouter } from "./routes/standardItem.routes";
 
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -63,14 +63,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
-
-// TODO: place these in their own files for consistency
-const categoryRouter = createStandardRoutes(
-  "../controllers/category.controller"
-);
-const standardItemRouter = createStandardRoutes(
-  "../controllers/standardItem.controller"
-);
 
 app.use("/api/v2/item", itemRouter);
 app.use("/api/v2/category", categoryRouter);

@@ -9,18 +9,11 @@ const createOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { name, quantity, url, categoryId } = req.body;
   // TODO: check if category exists, also do this with item.controller.ts
 
-  if (!name || !categoryId || !parseInt(categoryId)) {
-    handleBadRequestException(res);
-    return;
-  }
-
-  const catId = parseInt(categoryId);
-
   StandardItem.create({
     name,
     quantity,
     url,
-    categoryId: catId,
+    categoryId,
   })
     .then((standardItem) => {
       sendSSEMessage(standardItem, "standardItem.create", req.session.id);
@@ -31,11 +24,6 @@ const createOneRequest = async (req: Request, res: Response): Promise<void> => {
 
 const readOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
-
-  if (!id || !parseInt(id)) {
-    handleBadRequestException(res);
-    return;
-  }
 
   const foundStandardItem = await StandardItem.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
@@ -57,11 +45,6 @@ const readAllRequest = async (req: Request, res: Response): Promise<void> => {
 const updateOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const { name, quantity, url } = req.body;
-
-  if (!id || !parseInt(id) || (!name && !quantity && !url)) {
-    handleBadRequestException(res);
-    return;
-  }
 
   const foundStandardItem = await StandardItem.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
@@ -130,4 +113,3 @@ export {
   deleteOneRequest,
   deleteAllRequest,
 };
-

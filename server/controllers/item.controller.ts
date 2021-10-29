@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import validator from "validator";
 import { handleBadRequestException } from "../exceptions/badRequest.exception";
 import { handleDatabaseException } from "../exceptions/database.exception";
 import { handleRecordNotFoundException } from "../exceptions/recordNotFound.exception";
@@ -7,15 +8,11 @@ import { UpdateSequencesItemInterface } from "../interfaces/item/updateSequences
 import { Item } from "../models/item.model";
 import { sendSSEMessage } from "./events.controller";
 
-const createOneRequest = async (req: Request, res: Response): Promise<void> => {
+export const createOneRequest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { name, quantity, url, categoryId } = req.body;
-
-  if (!name || !categoryId || !parseInt(categoryId)) {
-    handleBadRequestException(res);
-    return;
-  }
-
-  const catId = parseInt(categoryId);
 
   const numItems: number = await Item.max("sequence");
 
@@ -24,7 +21,7 @@ const createOneRequest = async (req: Request, res: Response): Promise<void> => {
     quantity,
     url,
     sequence: numItems + 1,
-    categoryId: catId,
+    categoryId,
   })
     .then((item) => {
       sendSSEMessage(item, "item.create", req.session.id);
@@ -33,13 +30,11 @@ const createOneRequest = async (req: Request, res: Response): Promise<void> => {
     .catch((e) => handleDatabaseException(e, res));
 };
 
-const readOneRequest = async (req: Request, res: Response): Promise<void> => {
+export const readOneRequest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { id } = req.params;
-
-  if (!id || !parseInt(id)) {
-    handleBadRequestException(res);
-    return;
-  }
 
   const foundItem = await Item.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
@@ -52,20 +47,23 @@ const readOneRequest = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const readAllRequest = async (req: Request, res: Response): Promise<void> => {
+export const readAllRequest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   Item.findAll()
     .then((items) => res.status(200).send(items))
     .catch((e) => handleDatabaseException(e, res));
 };
 
-const updateOneRequest = async (req: Request, res: Response): Promise<void> => {
+export const updateOneRequest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { id } = req.params;
   const { name, quantity, url, status } = req.body;
 
-  if (!id || !parseInt(id) || (!name && !quantity && !url && !status)) {
-    handleBadRequestException(res);
-    return;
-  }
+  // Todo: handle partial updates
 
   const foundItem = await Item.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
@@ -89,7 +87,7 @@ const updateOneRequest = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const updateSequencesRequest = async (
+export const updateSequencesRequest = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -104,8 +102,8 @@ const updateSequencesRequest = async (
   // eslint-disable-next-line no-restricted-syntax
   for (const item of items) {
     if (
-      Object.prototype.hasOwnProperty.call(item, "id") &&
-      Object.prototype.hasOwnProperty.call(item, "sequence")
+      validator.isInt(item.id.toString()) &&
+      validator.isInt(item.sequence.toString())
     ) {
       // eslint-disable-next-line no-await-in-loop
       await Item.findByPk(item.id)
@@ -140,13 +138,11 @@ const updateSequencesRequest = async (
   res.status(200).send(handledItems);
 };
 
-const deleteOneRequest = async (req: Request, res: Response): Promise<void> => {
+export const deleteOneRequest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { id } = req.params;
-
-  if (!id || !parseInt(id)) {
-    handleBadRequestException(res);
-    return;
-  }
 
   const foundItem = await Item.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
@@ -165,21 +161,14 @@ const deleteOneRequest = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const deleteAllRequest = async (req: Request, res: Response): Promise<void> => {
+export const deleteAllRequest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   await Item.destroy({ truncate: true })
     .then(() => {
       sendSSEMessage("", "item.deleteAll", req.session.id);
       res.sendStatus(204);
     })
     .catch((e) => handleDatabaseException(e, res));
-};
-
-export {
-  createOneRequest,
-  readOneRequest,
-  readAllRequest,
-  updateOneRequest,
-  updateSequencesRequest,
-  deleteOneRequest,
-  deleteAllRequest,
 };
