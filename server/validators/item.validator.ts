@@ -39,6 +39,9 @@ export const updateItemValidationRules = (): Array<ValidationChain> => [
     .bail()
     .isURL()
     .withMessage("Url has to be a valid url"),
+];
+
+export const itemStatusValidationRules = (): Array<ValidationChain> => [
   body("status")
     .exists()
     .withMessage("Status is required")

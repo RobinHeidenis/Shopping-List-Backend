@@ -11,9 +11,9 @@ import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
 import { validate } from "../middlewares/validate";
 import { idOnlyValidationRules } from "../validators/default.validator";
 import {
-  createStandardItemValidationRules,
-  updateStandardItemValidationRules,
-} from "../validators/standardItem.validator";
+  createItemValidationRules,
+  updateItemValidationRules,
+} from "../validators/item.validator";
 
 export const standardItemRouter = express.Router();
 
@@ -21,7 +21,7 @@ standardItemRouter.use(authenticateJWTMiddleware);
 
 standardItemRouter.post(
   "/",
-  createStandardItemValidationRules(),
+  createItemValidationRules(),
   validate,
   createOneRequest
 );
@@ -33,7 +33,7 @@ standardItemRouter
   .get(idOnlyValidationRules(), validate, readOneRequest)
   .patch(
     idOnlyValidationRules(),
-    updateStandardItemValidationRules(),
+    updateItemValidationRules(),
     validate,
     updateOneRequest
   )

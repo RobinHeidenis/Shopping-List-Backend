@@ -13,6 +13,7 @@ import { validate } from "../middlewares/validate";
 import { idOnlyValidationRules } from "../validators/default.validator";
 import {
   createItemValidationRules,
+  itemStatusValidationRules,
   updateItemValidationRules,
 } from "../validators/item.validator";
 
@@ -32,6 +33,7 @@ itemRouter
   .patch(
     idOnlyValidationRules(),
     updateItemValidationRules(),
+    itemStatusValidationRules(),
     validate,
     updateOneRequest
   )
