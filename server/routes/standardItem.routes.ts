@@ -6,34 +6,34 @@ import {
   readAllRequest,
   readOneRequest,
   updateOneRequest,
-  updateSequencesRequest,
-} from "../controllers/item.controller";
+} from "../controllers/standardItem.controller";
 import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
 import { validate } from "../middlewares/validate";
 import { idOnlyValidationRules } from "../validators/default.validator";
 import {
   createItemValidationRules,
-  itemStatusValidationRules,
   updateItemValidationRules,
 } from "../validators/item.validator";
 
-export const itemRouter = express.Router();
+export const standardItemRouter = express.Router();
 
-itemRouter.use(authenticateJWTMiddleware);
+standardItemRouter.use(authenticateJWTMiddleware);
 
-itemRouter.post("/", createItemValidationRules(), validate, createOneRequest);
+standardItemRouter.post(
+  "/",
+  createItemValidationRules(),
+  validate,
+  createOneRequest
+);
 
-itemRouter.route("/all").get(readAllRequest).delete(deleteAllRequest);
+standardItemRouter.route("/all").get(readAllRequest).delete(deleteAllRequest);
 
-itemRouter.post("/sequences", updateSequencesRequest);
-
-itemRouter
+standardItemRouter
   .route("/:id")
   .get(idOnlyValidationRules(), validate, readOneRequest)
   .patch(
     idOnlyValidationRules(),
     updateItemValidationRules(),
-    itemStatusValidationRules(),
     validate,
     updateOneRequest
   )

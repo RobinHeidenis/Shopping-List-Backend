@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { handleBadRequestException } from "../exceptions/badRequest.exception";
 import { handleDatabaseException } from "../exceptions/database.exception";
 import { handleRecordNotFoundException } from "../exceptions/recordNotFound.exception";
 import { Category } from "../models/category.model";
@@ -7,11 +6,6 @@ import { sendSSEMessage } from "./events.controller";
 
 const createOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { name, color } = req.body;
-
-  if (!name || !color) {
-    handleBadRequestException(res);
-    return;
-  }
 
   Category.create({
     name,
@@ -26,11 +20,6 @@ const createOneRequest = async (req: Request, res: Response): Promise<void> => {
 
 const readOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
-
-  if (!id || !parseInt(id)) {
-    handleBadRequestException(res);
-    return;
-  }
 
   const foundCategory = await Category.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
@@ -53,10 +42,7 @@ const updateOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const { name, color } = req.body;
 
-  if (!id || !parseInt(id) || (!name && !color)) {
-    handleBadRequestException(res);
-    return;
-  }
+  // Todo: handle partial updates
 
   const foundCategory = await Category.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
@@ -80,11 +66,6 @@ const updateOneRequest = async (req: Request, res: Response): Promise<void> => {
 
 const deleteOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
-
-  if (!id || !parseInt(id)) {
-    handleBadRequestException(res);
-    return;
-  }
 
   const foundCategory = await Category.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
