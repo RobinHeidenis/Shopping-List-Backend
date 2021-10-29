@@ -1,4 +1,4 @@
-import { body, param, ValidationChain } from "express-validator";
+import { body, ValidationChain } from "express-validator";
 
 export const createItemValidationRules = (): Array<ValidationChain> => [
   body("name")
@@ -21,7 +21,6 @@ export const createItemValidationRules = (): Array<ValidationChain> => [
 ];
 
 export const updateItemValidationRules = (): Array<ValidationChain> => [
-  param("id").exists().isInt().withMessage("Id has to be a number"),
   body("name")
     .exists()
     .withMessage("Name is required")
@@ -49,8 +48,4 @@ export const updateItemValidationRules = (): Array<ValidationChain> => [
     .bail()
     .isIn([1, 2])
     .withMessage("Status has to be either 1 (open) or 2 (closed)"),
-];
-
-export const idOnlyValidationRules = (): Array<ValidationChain> => [
-  param("id").exists().isInt().withMessage("Id has to be a number"),
 ];

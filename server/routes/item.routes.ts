@@ -10,9 +10,9 @@ import {
 } from "../controllers/item.controller";
 import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
 import { validate } from "../middlewares/validate";
+import { idOnlyValidationRules } from "../validators/default.validator";
 import {
   createItemValidationRules,
-  idOnlyValidationRules,
   updateItemValidationRules,
 } from "../validators/item.validator";
 
@@ -29,5 +29,10 @@ itemRouter.post("/sequences", updateSequencesRequest);
 itemRouter
   .route("/:id")
   .get(idOnlyValidationRules(), validate, readOneRequest)
-  .patch(updateItemValidationRules(), validate, updateOneRequest)
+  .patch(
+    idOnlyValidationRules(),
+    updateItemValidationRules(),
+    validate,
+    updateOneRequest
+  )
   .delete(idOnlyValidationRules(), validate, deleteOneRequest);

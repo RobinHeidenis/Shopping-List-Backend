@@ -9,9 +9,9 @@ import {
 } from "../controllers/standardItem.controller";
 import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
 import { validate } from "../middlewares/validate";
+import { idOnlyValidationRules } from "../validators/default.validator";
 import {
   createStandardItemValidationRules,
-  idOnlyValidationRules,
   updateStandardItemValidationRules,
 } from "../validators/standardItem.validator";
 
@@ -31,5 +31,10 @@ standardItemRouter.route("/all").get(readAllRequest).delete(deleteAllRequest);
 standardItemRouter
   .route("/:id")
   .get(idOnlyValidationRules(), validate, readOneRequest)
-  .patch(updateStandardItemValidationRules(), validate, updateOneRequest)
+  .patch(
+    idOnlyValidationRules(),
+    updateStandardItemValidationRules(),
+    validate,
+    updateOneRequest
+  )
   .delete(idOnlyValidationRules(), validate, deleteOneRequest);

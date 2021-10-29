@@ -1,4 +1,4 @@
-import { body, param, ValidationChain } from "express-validator";
+import { body, ValidationChain } from "express-validator";
 
 export const createCategoryValidationRules = (): Array<ValidationChain> => [
   body("name")
@@ -19,7 +19,6 @@ export const createCategoryValidationRules = (): Array<ValidationChain> => [
 ];
 
 export const updateCategoryValidationRules = (): Array<ValidationChain> => [
-  param("id").exists().isInt().withMessage("Id has to be a number"),
   body("name")
     .exists()
     .withMessage("Name is required")
@@ -35,8 +34,4 @@ export const updateCategoryValidationRules = (): Array<ValidationChain> => [
     .bail()
     .isHexColor()
     .withMessage("Name has to be a hex color"),
-];
-
-export const idOnlyValidationRules = (): Array<ValidationChain> => [
-  param("id").exists().isInt().withMessage("Id has to be a number"),
 ];

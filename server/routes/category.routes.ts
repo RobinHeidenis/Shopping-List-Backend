@@ -11,9 +11,9 @@ import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
 import { validate } from "../middlewares/validate";
 import {
   createCategoryValidationRules,
-  idOnlyValidationRules,
   updateCategoryValidationRules,
 } from "../validators/category.validator";
+import { idOnlyValidationRules } from "../validators/default.validator";
 
 export const categoryRouter = express.Router();
 
@@ -31,5 +31,10 @@ categoryRouter.route("/all").get(readAllRequest).delete(deleteAllRequest);
 categoryRouter
   .route("/:id")
   .get(idOnlyValidationRules(), validate, readOneRequest)
-  .patch(updateCategoryValidationRules(), validate, updateOneRequest)
+  .patch(
+    idOnlyValidationRules(),
+    updateCategoryValidationRules(),
+    validate,
+    updateOneRequest
+  )
   .delete(idOnlyValidationRules(), validate, deleteOneRequest);
