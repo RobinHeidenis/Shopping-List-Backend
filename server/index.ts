@@ -70,7 +70,7 @@ app.use("/api/v2/standardItem", standardItemRouter);
 app.use("/api/v2/search", searchRouter);
 app.use("/api/v2/events", eventsRouter);
 app.use("/api/v2/authentication", authenticationRouter);
-app.get("/api/health", (req, res) => res.send({ message: "OK" }));
+app.get("/api/health", (req, res) => res.send({ message: "Service OK" }));
 app.use("", deprecatedRoutesRouter);
 
 app.use([notFoundMiddleware, errorMiddleware]);
