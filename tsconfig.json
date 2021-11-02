@@ -10,7 +10,8 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "baseUrl": "./",
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "outDir": "build"
   },
   "exclude": [
     "node_modules",

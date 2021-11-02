@@ -1,8 +1,10 @@
+import { config } from "dotenv";
 import express, { Application } from "express";
 import { SessionOptions } from "express-session";
 import helmet from "helmet";
-import dotenv = require("dotenv");
 import MySqlSessionStore = require("express-mysql-session");
+import { errorMiddleware } from "./middlewares/error.middleware";
+import { notFoundMiddleware } from "./middlewares/notFound.middleware";
 import { authenticationRouter } from "./routes/authentication.routes";
 import { categoryRouter } from "./routes/category.routes";
 import { urlRoutes as deprecatedRoutesRouter } from "./routes/deprecated.routes";
@@ -16,9 +18,9 @@ const cookieParser = require("cookie-parser");
 const compression = require("compression");
 const session = require("express-session");
 
-dotenv.config();
+config();
 
-export const app: Application = express();
+const app: Application = express();
 
 const MysqlStore = MySqlSessionStore(session);
 
@@ -70,4 +72,14 @@ app.use("/api/v2/standardItem", standardItemRouter);
 app.use("/api/v2/search", searchRouter);
 app.use("/api/v2/events", eventsRouter);
 app.use("/api/v2/authentication", authenticationRouter);
+app.get("/api/health", (req, res) => res.send({ message: "OK" }));
 app.use("", deprecatedRoutesRouter);
+
+app.get("/api/unsafe-error", (req, res) => {
+  throw new Error("Test unsafe error");
+});
+
+app.use(notFoundMiddleware);
+app.use(errorMiddleware);
+
+export { app };

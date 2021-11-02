@@ -52,4 +52,14 @@ export class Logger {
       )}] ${message}`
     );
   }
+
+  static fatal(message: string): void {
+    if (this.isTestMode) return;
+    const now = new Date(Date.now());
+    console.log(
+      `[${chalk.redBright("FATAL")}]  [${chalk.gray(
+        now.toLocaleString()
+      )}] ${message}`
+    );
+  }
 }
