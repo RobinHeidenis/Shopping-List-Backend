@@ -75,10 +75,6 @@ app.use("/api/v2/authentication", authenticationRouter);
 app.get("/api/health", (req, res) => res.send({ message: "OK" }));
 app.use("", deprecatedRoutesRouter);
 
-app.get("/api/unsafe-error", (req, res) => {
-  throw new Error("Test unsafe error");
-});
-
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
