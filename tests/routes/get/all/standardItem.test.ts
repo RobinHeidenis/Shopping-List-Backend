@@ -38,6 +38,6 @@ describe("Standard item GET-all endpoint success", () => {
 
     const res = await request(app).get("/api/v2/standardItem/all");
     expect(res.statusCode).toEqual(200);
-    expect(res.body.length).toEqual(2);
+    expect(res.body).toHaveLength(2);
   });
 });

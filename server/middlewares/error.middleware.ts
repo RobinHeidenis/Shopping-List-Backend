@@ -6,7 +6,7 @@ export const errorMiddleware = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction //eslint-disable-line
 ): void => {
   const {
     output: { payload: error, statusCode },

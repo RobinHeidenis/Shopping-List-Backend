@@ -1,7 +1,8 @@
 import chalk from "chalk";
+import { config } from "../config/env.config";
 
 export class Logger {
-  private static isTestMode: boolean = process.env.NODE_ENV === "test";
+  private static isTestMode: boolean = config.env === "test";
 
   static info(message: string): void {
     if (this.isTestMode) return;

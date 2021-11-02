@@ -20,6 +20,7 @@ const events = (req: Request, res: Response): void => {
   res.flush();
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const sendSSEMessage = (data: any, event: EventType, sender: string): void => {
   connectedClients.forEach((res, sessionId) => {
     if (sessionId === sender) return;
