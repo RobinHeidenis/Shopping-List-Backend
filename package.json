@@ -30,6 +30,7 @@
     "express-validator": "^6.13.0",
     "helmet": "^4.4.1",
     "http-terminator": "^3.0.3",
+    "joi": "^17.4.2",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.0",
     "node-fetch": "^2.6.5",

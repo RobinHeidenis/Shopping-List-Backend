@@ -1,4 +1,5 @@
 import { ServerlessMysql } from "serverless-mysql";
+import { config } from "../server/config/env.config";
 
 require("dotenv").config();
 
@@ -7,10 +8,10 @@ const db: ServerlessMysql = require("serverless-mysql")({
   base: 5,
   cap: 200,
   config: {
-    database: process.env.DB_NAME_OLD,
-    user: process.env.DB_USERNAME_OLD,
-    password: process.env.DB_PASSWORD_OLD,
-    host: process.env.DB_IP_OLD,
+    database: config.db_old.name,
+    user: config.db_old.username,
+    password: config.db_old.password,
+    host: config.db_old.ip,
   },
 });
 

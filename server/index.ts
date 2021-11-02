@@ -1,8 +1,8 @@
-import { config } from "dotenv";
 import express, { Application } from "express";
 import { SessionOptions } from "express-session";
 import helmet from "helmet";
 import MySqlSessionStore = require("express-mysql-session");
+import { config } from "./config/env.config";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import { notFoundMiddleware } from "./middlewares/notFound.middleware";
 import { authenticationRouter } from "./routes/authentication.routes";
@@ -18,17 +18,15 @@ const cookieParser = require("cookie-parser");
 const compression = require("compression");
 const session = require("express-session");
 
-config();
-
 const app: Application = express();
 
 const MysqlStore = MySqlSessionStore(session);
 
 const sessionStoreOptions: MySqlSessionStore.Options = {
-  host: process.env.DB_IP,
+  host: config.db.ip,
   port: 3306,
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
+  user: config.db.username,
+  password: config.db.password,
   database: "sessions",
   createDatabaseTable: true,
 };
@@ -36,7 +34,7 @@ const sessionStoreOptions: MySqlSessionStore.Options = {
 export const sessionStore = new MysqlStore(sessionStoreOptions);
 
 const sessionOptions: SessionOptions = {
-  secret: process.env.accessTokenSecret || "",
+  secret: config.tokens.access || "",
   store: sessionStore,
   resave: false,
   cookie: {
@@ -75,7 +73,6 @@ app.use("/api/v2/authentication", authenticationRouter);
 app.get("/api/health", (req, res) => res.send({ message: "OK" }));
 app.use("", deprecatedRoutesRouter);
 
-app.use(notFoundMiddleware);
-app.use(errorMiddleware);
+app.use([notFoundMiddleware, errorMiddleware]);
 
 export { app };

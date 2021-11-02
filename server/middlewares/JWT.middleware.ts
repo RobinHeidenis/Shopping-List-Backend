@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import jwt, { Secret, VerifyErrors } from "jsonwebtoken";
+import { config } from "../config/env.config";
 import { handleNoTokenException } from "../exceptions/noToken.exception";
 import { handleUnauthorizedException } from "../exceptions/unauthorized.exception";
 import { Logger } from "../logging/logger";
@@ -17,7 +18,7 @@ export const authenticateJWTMiddleware = (
 
     jwt.verify(
       token,
-      process.env.accessTokenSecret as Secret,
+      config.tokens.access as Secret,
       (err: VerifyErrors | null) => {
         if (err) {
           Logger.error(err);
