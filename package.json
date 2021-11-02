@@ -5,15 +5,17 @@
   "main": "server/index.ts",
   "scripts": {
     "test": "jest --runInBand --coverage",
-    "start": "ts-node-dev server/server.ts",
-    "server": "npx ts-node server/server.ts"
+    "start": "cross-env NODE_ENV=production node build/server/server.js",
+    "dev": "cross-env NODE_ENV=development ts-node-dev server/server.ts",
+    "build": "tsc -p .\\tsconfig.json"
   },
   "author": "Robin Heidenis",
   "license": "ISC",
   "engines": {
-    "node": "^14.16.0"
+    "node": "^17.0.1"
   },
   "dependencies": {
+    "@hapi/boom": "^9.1.4",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.2",
     "compression": "^1.7.4",
@@ -21,11 +23,13 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
     "express-mysql-session": "^2.1.7",
     "express-session": "^1.17.2",
     "express-sse": "^0.5.3",
     "express-validator": "^6.13.0",
     "helmet": "^4.4.1",
+    "http-terminator": "^3.0.3",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.0",
     "node-fetch": "^2.6.5",
@@ -52,6 +56,7 @@
     "@types/validator": "^13.6.3",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
+    "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-airbnb-typescript": "^14.0.1",

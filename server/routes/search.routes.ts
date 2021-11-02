@@ -1,6 +1,6 @@
 import express = require("express");
 import controller = require("../controllers/search.controller");
-import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
+import { authenticateJWTMiddleware } from "../middlewares/JWT.middleware";
 
 export const searchRouter = express.Router();
 

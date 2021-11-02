@@ -7,8 +7,8 @@ import {
   readOneRequest,
   updateOneRequest,
 } from "../controllers/standardItem.controller";
-import { authenticateJWTMiddleware } from "../middlewares/JWTMiddleware";
-import { validate } from "../middlewares/validate";
+import { authenticateJWTMiddleware } from "../middlewares/JWT.middleware";
+import { validate } from "../middlewares/validate.middleware";
 import { idOnlyValidationRules } from "../validators/default.validator";
 import {
   createItemValidationRules,
