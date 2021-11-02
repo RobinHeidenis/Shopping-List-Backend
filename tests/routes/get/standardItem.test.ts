@@ -24,7 +24,7 @@ describe("Standard item GET endpoint success", () => {
     expect(res.body.id).toEqual(1);
     expect(res.body.name).toEqual("test");
     expect(res.body.categoryId).toEqual(1);
-    expect(res.body.url).toEqual(null);
+    expect(res.body.url).toBeNull();
   });
 });
 

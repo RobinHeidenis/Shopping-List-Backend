@@ -23,30 +23,55 @@ const schema = Joi.object()
 
 const env = loadConfig(schema);
 
-export const config = {
-  env: env.NODE_ENV as "development" | "test" | "production",
-  port: env.PORT as number,
+export interface EnvConfig {
+  env: "development" | "test" | "production";
+  port: number;
   db: {
-    ip: env.DB_IP as string,
-    name: env.DB_NAME as string,
-    username: env.DB_USERNAME as string,
-    password: env.DB_PASSWORD as string,
+    ip: string;
+    name: string;
+    username: string;
+    password: string;
+  };
+  db_old: {
+    ip: string;
+    name: string;
+    username: string;
+    password: string;
+  };
+  tokens: {
+    access: string;
+    refresh: string;
+  };
+  test: {
+    username: string;
+    password: string;
+  };
+}
+
+export const config: EnvConfig = {
+  env: env.NODE_ENV,
+  port: env.PORT,
+  db: {
+    ip: env.DB_IP,
+    name: env.DB_NAME,
+    username: env.DB_USERNAME,
+    password: env.DB_PASSWORD,
   },
   /**
    * @deprecated
    */
   db_old: {
-    ip: env.DB_IP_OLD as string,
-    name: env.DB_NAME_OLD as string,
-    username: env.DB_USERNAME_OLD as string,
-    password: env.DB_PASSWORD_OLD as string,
+    ip: env.DB_IP_OLD,
+    name: env.DB_NAME_OLD,
+    username: env.DB_USERNAME_OLD,
+    password: env.DB_PASSWORD_OLD,
   },
   tokens: {
-    access: env.accessTokenSecret as string,
-    refresh: env.refreshTokenSecret as string,
+    access: env.accessTokenSecret,
+    refresh: env.refreshTokenSecret,
   },
   test: {
-    username: env.TEST_LOGIN_USERNAME as string,
-    password: env.TEST_LOGIN_PASSWORD as string,
+    username: env.TEST_LOGIN_USERNAME,
+    password: env.TEST_LOGIN_PASSWORD,
   },
 };
