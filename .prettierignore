@@ -1,7 +1,6 @@
 .idea
 *.iml
-out
-gen
 .scannerwork
 coverage
 node_modules
+build

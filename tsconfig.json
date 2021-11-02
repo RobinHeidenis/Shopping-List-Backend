@@ -13,15 +13,6 @@
     "strictPropertyInitialization": false,
     "outDir": "build"
   },
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
-  "include": [
-    "./**/*.ts",
-    "./**/*.js",
-    "*.ts",
-    "*.js",
-    ".eslintrc.js"
-  ]
+  "exclude": ["node_modules", "dist"],
+  "include": ["./**/*.ts", "./**/*.js", "*.ts", "*.js", ".eslintrc.js"]
 }
