@@ -1,6 +1,4 @@
-.idea
-*.iml
+build
 .scannerwork
 coverage
 node_modules
-build

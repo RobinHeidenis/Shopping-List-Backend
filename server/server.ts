@@ -1,17 +1,40 @@
+import { createHttpTerminator } from "http-terminator";
+import { config } from "./config/env.config";
 import { DBInit } from "./db";
 import { app } from "./index";
 import { Logger } from "./logging/logger";
+import { handle } from "./util/error";
 
-const PORT = 3001;
+require("express-async-errors");
 
-export const server = app.listen(PORT, async () => {
-  Logger.info(`Shopping list backend listening at http://localhost:${PORT}`);
+process.on("unhandledRejection", (error: Error) => {
+  throw error;
+});
+
+process.on("uncaughtException", (error: Error) => {
+  handle(error);
+});
+
+export const server = app.listen(config.port, async () => {
+  Logger.info(
+    `Shopping list backend listening at http://localhost:${config.port} in ${config.env} mode`
+  );
   // TODO: implement auth server ping
   await DBInit();
 });
 
-process.on("SIGTERM", () => {
-  server.close(() => {
-    Logger.warn("Process terminated");
-  });
-});
+const httpTerminator = createHttpTerminator({ server });
+
+const shutdownSignals = ["SIGTERM", "SIGINT"];
+
+export const shutdownGracefully = async (signal: string): Promise<void> => {
+  Logger.info(`${signal} received, closing gracefully ...`);
+  await httpTerminator.terminate();
+  process.exit();
+};
+
+shutdownSignals.forEach((signal) =>
+  process.on(signal, async () => {
+    await shutdownGracefully(signal);
+  })
+);

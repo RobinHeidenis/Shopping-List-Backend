@@ -1,9 +1,10 @@
-import * as chalk from "chalk";
+import chalk from "chalk";
+import { config } from "../config/env.config";
 
 export class Logger {
-  private static isTestMode: boolean = process.env.NODE_ENV === "test";
+  private static isTestMode: boolean = config.env === "test";
 
-  static info(message: string) {
+  static info(message: string): void {
     if (this.isTestMode) return;
     const now = new Date(Date.now());
     console.log(
@@ -13,7 +14,7 @@ export class Logger {
     );
   }
 
-  static success(message: string) {
+  static success(message: string): void {
     if (this.isTestMode) return;
     const now = new Date(Date.now());
     console.log(
@@ -23,7 +24,7 @@ export class Logger {
     );
   }
 
-  static warn(message: string) {
+  static warn(message: string): void {
     if (this.isTestMode) return;
     const now = new Date(Date.now());
     console.log(
@@ -33,7 +34,7 @@ export class Logger {
     );
   }
 
-  static error(message: string) {
+  static error(message: string | Error): void {
     if (this.isTestMode) return;
     const now = new Date(Date.now());
     console.log(
@@ -43,11 +44,21 @@ export class Logger {
     );
   }
 
-  static query(message: string) {
+  static query(message: string): void {
     if (this.isTestMode) return;
     const now = new Date(Date.now());
     console.log(
       `[${chalk.yellow("QUERY")}]  [${chalk.gray(
+        now.toLocaleString()
+      )}] ${message}`
+    );
+  }
+
+  static fatal(message: string): void {
+    if (this.isTestMode) return;
+    const now = new Date(Date.now());
+    console.log(
+      `[${chalk.redBright("FATAL")}]  [${chalk.gray(
         now.toLocaleString()
       )}] ${message}`
     );

@@ -24,6 +24,6 @@ describe("Category GET-all endpoint success", () => {
     await seedDatabase();
     const res = await request(app).get("/api/v2/category/all");
     expect(res.statusCode).toEqual(200);
-    expect(res.body.length).toEqual(2);
+    expect(res.body).toHaveLength(2);
   });
 });

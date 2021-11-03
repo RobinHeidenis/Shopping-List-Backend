@@ -1,12 +1,12 @@
+import { Request, Response } from "express";
+import { Response as fetchResponse } from "node-fetch";
 import { handleBadRequestException } from "../exceptions/badRequest.exception";
 import { handleInvalidCredentialsException } from "../exceptions/invalidCredentials.exception";
 import { Logger } from "../logging/logger";
 
-export {};
-
 const fetch = require("node-fetch");
 
-exports.login = async (req, res) => {
+const login = async (req: Request, res: Response): Promise<void> => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -24,7 +24,7 @@ exports.login = async (req, res) => {
       password,
     }),
   })
-    .then((response) =>
+    .then((response: fetchResponse) =>
       response.json().then((result) => {
         if (result.status === "failure") {
           handleInvalidCredentialsException(res);
@@ -36,8 +36,10 @@ exports.login = async (req, res) => {
         });
       })
     )
-    .catch((exception) => {
+    .catch((exception: Error) => {
       Logger.error(exception);
       res.sendStatus(500);
     });
 };
+
+export { login };

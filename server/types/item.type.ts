@@ -12,8 +12,7 @@ export interface ItemAttributes {
   category: CategoryAttributes;
 }
 
-export interface ItemCreationAttributes
-  extends Optional<
-    ItemAttributes,
-    "id" | "quantity" | "url" | "status" | "sequence" | "category"
-  > {}
+export type ItemCreationAttributes = Optional<
+  ItemAttributes,
+  "id" | "quantity" | "url" | "status" | "sequence" | "category"
+>;

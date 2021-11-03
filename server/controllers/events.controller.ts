@@ -1,10 +1,12 @@
+import { Request, Response } from "express";
 import { EventType } from "../interfaces/events/events.interface";
 
 const connectedClients = new Map();
 
-exports.events = (req, res) => {
-  if (connectedClients.has(req.session.id))
+const events = (req: Request, res: Response): void => {
+  if (connectedClients.has(req.session.id)) {
     connectedClients.get(req.session.id).end();
+  }
   connectedClients.set(req.session.id, res);
 
   res.writeHead(200, {
@@ -18,7 +20,8 @@ exports.events = (req, res) => {
   res.flush();
 };
 
-export function sendSSEMessage(data: any, event: EventType, sender: string) {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const sendSSEMessage = (data: any, event: EventType, sender: string): void => {
   connectedClients.forEach((res, sessionId) => {
     if (sessionId === sender) return;
     res.write(`id: ${Date.now()}\n`);
@@ -26,4 +29,6 @@ export function sendSSEMessage(data: any, event: EventType, sender: string) {
     res.write(`data: ${JSON.stringify(data)}\n\n`);
     res.flush();
   });
-}
+};
+
+export { events, sendSSEMessage };

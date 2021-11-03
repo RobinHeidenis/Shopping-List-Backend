@@ -6,6 +6,6 @@ export interface Seeder {
 
 const seeders: Seeder[] = [new CategorySeeder()];
 
-export async function seedDatabase() {
+export async function seedDatabase(): Promise<void> {
   await seeders[0].seed();
 }

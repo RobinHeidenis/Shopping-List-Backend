@@ -10,8 +10,7 @@ export interface StandardItemAttributes {
   category: CategoryAttributes;
 }
 
-export interface StandardItemsCreationAttributes
-  extends Optional<
-    StandardItemAttributes,
-    "id" | "quantity" | "url" | "category"
-  > {}
+export type StandardItemsCreationAttributes = Optional<
+  StandardItemAttributes,
+  "id" | "quantity" | "url" | "category"
+>;

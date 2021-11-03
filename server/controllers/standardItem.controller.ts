@@ -1,25 +1,19 @@
-import { StandardItem } from "../models/standardItem.model";
-import { handleDatabaseException } from "../exceptions/database.exception";
+import { Request, Response } from "express";
 import { handleBadRequestException } from "../exceptions/badRequest.exception";
+import { handleDatabaseException } from "../exceptions/database.exception";
 import { handleRecordNotFoundException } from "../exceptions/recordNotFound.exception";
+import { StandardItem } from "../models/standardItem.model";
 import { sendSSEMessage } from "./events.controller";
 
-exports.createOneRequest = async (req, res) => {
+const createOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { name, quantity, url, categoryId } = req.body;
   // TODO: check if category exists, also do this with item.controller.ts
-
-  if (!name || !categoryId || !parseInt(categoryId)) {
-    handleBadRequestException(res);
-    return;
-  }
-
-  const catId = parseInt(categoryId);
 
   StandardItem.create({
     name,
     quantity,
     url,
-    categoryId: catId,
+    categoryId,
   })
     .then((standardItem) => {
       sendSSEMessage(standardItem, "standardItem.create", req.session.id);
@@ -28,13 +22,8 @@ exports.createOneRequest = async (req, res) => {
     .catch((e) => handleDatabaseException(e, res));
 };
 
-exports.readOneRequest = async (req, res) => {
+const readOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
-
-  if (!id || !parseInt(id)) {
-    handleBadRequestException(res);
-    return;
-  }
 
   const foundStandardItem = await StandardItem.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
@@ -47,20 +36,15 @@ exports.readOneRequest = async (req, res) => {
   }
 };
 
-exports.readAllRequest = async (req, res) => {
+const readAllRequest = async (req: Request, res: Response): Promise<void> => {
   StandardItem.findAll()
     .then((standardItems) => res.status(200).send(standardItems))
     .catch((e) => handleDatabaseException(e, res));
 };
 
-exports.updateOneRequest = async (req, res) => {
+const updateOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const { name, quantity, url } = req.body;
-
-  if (!id || !parseInt(id) || (!name && !quantity && !url)) {
-    handleBadRequestException(res);
-    return;
-  }
 
   const foundStandardItem = await StandardItem.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
@@ -83,7 +67,7 @@ exports.updateOneRequest = async (req, res) => {
   }
 };
 
-exports.deleteOneRequest = async (req, res) => {
+const deleteOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
   if (!id || !parseInt(id)) {
@@ -112,11 +96,20 @@ exports.deleteOneRequest = async (req, res) => {
   }
 };
 
-exports.deleteAllRequest = async (req, res) => {
+const deleteAllRequest = async (req: Request, res: Response): Promise<void> => {
   await StandardItem.destroy({ truncate: true })
     .then(() => {
       sendSSEMessage("", "standardItem.deleteAll", req.session.id);
       res.sendStatus(204);
     })
     .catch((e) => handleDatabaseException(e, res));
+};
+
+export {
+  createOneRequest,
+  readOneRequest,
+  readAllRequest,
+  updateOneRequest,
+  deleteOneRequest,
+  deleteAllRequest,
 };

@@ -1,7 +1,10 @@
 // noinspection SqlResolve
+/* eslint-disable */
+// @ts-nocheck
 
 import { Category, InsertQueryResult, SearchItem } from "../../interfaces";
 import { query } from "../../utils/db";
+import { config } from "../config/env.config";
 import { Logger } from "../logging/logger";
 
 require("dotenv").config();
@@ -21,7 +24,7 @@ const authenticateJWT = (req, res, next) => {
   if (authHeader) {
     const token = authHeader.split(" ")[1];
 
-    jwt.verify(token, process.env.accessTokenSecret, (err, user) => {
+    jwt.verify(token, config.tokens.access, (err, user) => {
       if (err) {
         Logger.error(err);
         return res.status(403).send({
@@ -336,4 +339,4 @@ urlRoutes.post("/api/deleteStandardItem", authenticateJWT, (req, res) => {
     .catch((reason) => Logger.error(reason));
 });
 
-module.exports = urlRoutes;
+export { urlRoutes };
