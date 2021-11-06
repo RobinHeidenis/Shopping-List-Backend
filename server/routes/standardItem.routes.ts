@@ -12,7 +12,7 @@ import { validate } from "../middlewares/validate.middleware";
 import { idOnlyValidationRules } from "../validators/default.validator";
 import {
   createItemValidationRules,
-  updateItemValidationRules,
+  updateStandardItemValidationRules,
 } from "../validators/item.validator";
 
 export const standardItemRouter = express.Router();
@@ -33,7 +33,7 @@ standardItemRouter
   .get(idOnlyValidationRules(), validate, readOneRequest)
   .patch(
     idOnlyValidationRules(),
-    updateItemValidationRules(),
+    updateStandardItemValidationRules(),
     validate,
     updateOneRequest
   )
