@@ -64,20 +64,19 @@ export const updateOneRequest = async (
   const { id } = req.params;
   const { name, quantity, url, status } = req.body;
 
-  // Todo: handle partial updates
-
   const foundItem = await Item.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
   );
 
   if (foundItem) {
+    if (name) foundItem.name = name;
+    if (quantity) foundItem.quantity = quantity;
+    if (url) foundItem.url = url;
+    if (status) foundItem.status = status;
+    // TODO: add sequence here?
+
     foundItem
-      .update({
-        name,
-        quantity,
-        url,
-        status,
-      })
+      .save()
       .then((item) => {
         sendSSEMessage(item, "item.update", req.session.id);
         res.status(200).json(item);

@@ -1,4 +1,6 @@
-import { body, ValidationChain } from "express-validator";
+import { Request } from "express";
+import { body, oneOf, Result, ValidationChain } from "express-validator";
+import { Middleware } from "express-validator/src/base";
 
 export const createItemValidationRules = (): Array<ValidationChain> => [
   body("name")
@@ -20,35 +22,58 @@ export const createItemValidationRules = (): Array<ValidationChain> => [
   body("url").optional().isURL().withMessage("Url has to be a valid url"),
 ];
 
-export const updateItemValidationRules = (): Array<ValidationChain> => [
-  body("name")
-    .exists()
-    .withMessage("Name is required")
-    .bail()
-    .notEmpty()
-    .withMessage("Name cannot be empty"),
-  body("quantity")
-    .exists()
-    .withMessage("Quantity is required")
-    .bail()
-    .isAlphanumeric()
-    .withMessage("Quantity has to be alphanumeric"),
-  body("url")
-    .exists()
-    .withMessage("Url is required")
-    .bail()
-    .isURL()
-    .withMessage("Url has to be a valid url"),
-];
+export const updateStandardItemValidationRules = (): Middleware & {
+  run: (req: Request) => Promise<Result>;
+} =>
+  oneOf(
+    [
+      body("name")
+        .exists()
+        .bail()
+        .notEmpty()
+        .withMessage("Name cannot be empty"),
+      body("quantity")
+        .exists()
+        .bail()
+        .isAlphanumeric()
+        .withMessage("Quantity has to be alphanumeric"),
+      body("url")
+        .exists()
+        .bail()
+        .isURL()
+        .withMessage("Url has to be a valid url"),
+    ],
+    "At least one of the following properties has to exist: 'name', 'quantity', 'url"
+  );
 
-export const itemStatusValidationRules = (): Array<ValidationChain> => [
-  body("status")
-    .exists()
-    .withMessage("Status is required")
-    .bail()
-    .isInt()
-    .withMessage("Status has to be a number")
-    .bail()
-    .isIn([1, 2])
-    .withMessage("Status has to be either 1 (open) or 2 (closed)"),
-];
+export const UpdateItemValidationRules = (): Middleware & {
+  run: (req: Request) => Promise<Result>;
+} =>
+  oneOf(
+    [
+      body("name")
+        .exists()
+        .bail()
+        .notEmpty()
+        .withMessage("Name cannot be empty"),
+      body("quantity")
+        .exists()
+        .bail()
+        .isAlphanumeric()
+        .withMessage("Quantity has to be alphanumeric"),
+      body("url")
+        .exists()
+        .bail()
+        .isURL()
+        .withMessage("Url has to be a valid url"),
+      body("status")
+        .exists()
+        .bail()
+        .isInt()
+        .withMessage("Status has to be a number")
+        .bail()
+        .isIn([1, 2])
+        .withMessage("Status has to be either 1 (open) or 2 (closed)"),
+    ],
+    "At least one of the following properties has to exist: 'name', 'quantity', 'url"
+  );

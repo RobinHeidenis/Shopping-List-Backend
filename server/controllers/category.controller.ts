@@ -42,18 +42,16 @@ const updateOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const { name, color } = req.body;
 
-  // Todo: handle partial updates
-
   const foundCategory = await Category.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)
   );
 
   if (foundCategory) {
+    if (name) foundCategory.name = name;
+    if (color) foundCategory.color = color;
+
     foundCategory
-      .update({
-        name,
-        color,
-      })
+      .save()
       .then((category) => {
         sendSSEMessage(category, "category.update", req.session.id);
         res.status(200).json(category);
