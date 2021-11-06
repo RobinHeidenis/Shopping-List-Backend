@@ -74,6 +74,11 @@ export const UpdateItemValidationRules = (): Middleware & {
         .bail()
         .isIn([1, 2])
         .withMessage("Status has to be either 1 (open) or 2 (closed)"),
+      body("sequence")
+        .exists()
+        .bail()
+        .isInt()
+        .withMessage("Sequence has to be a number"),
     ],
     "At least one of the following properties has to exist: 'name', 'quantity', 'url"
   );
