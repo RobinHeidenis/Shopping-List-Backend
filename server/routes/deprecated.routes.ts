@@ -128,7 +128,6 @@ urlRoutes.get("/api/getItemList", authenticateJWT, (req, res) => {
     []
   )
     .then((results) => {
-      // TODO: get the category ids from the items and add the category info there
       const items = { items: results };
       res.json(items);
     })
