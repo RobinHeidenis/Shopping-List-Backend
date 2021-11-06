@@ -1,9 +1,11 @@
-import { sequelize } from "../../../../server/db";
 import { app, sessionStore } from "../../../../server";
-import { seedDatabase } from "../../../../server/seeders/seeder";
+import { sequelize } from "../../../../server/db";
 import { StandardItem } from "../../../../server/models/standardItem.model";
+import { seedDatabase } from "../../../../server/seeders/seeder";
 
 const request = require("supertest");
+
+jest.mock("http-terminator");
 
 afterAll(async () => {
   await sequelize.close();
@@ -17,9 +19,18 @@ beforeEach(async () => {
 
 describe("Standard item DELETE-all endpoint success", () => {
   it("should successfully delete all standard items", async () => {
-    await StandardItem.create({ name: "test1", categoryId: 1 });
-    await StandardItem.create({ name: "test2", categoryId: 1 });
-    await StandardItem.create({ name: "test3", categoryId: 1 });
+    await StandardItem.create({
+      name: "test1",
+      categoryId: 1,
+    });
+    await StandardItem.create({
+      name: "test2",
+      categoryId: 1,
+    });
+    await StandardItem.create({
+      name: "test3",
+      categoryId: 1,
+    });
 
     expect(await StandardItem.count()).toEqual(3);
 

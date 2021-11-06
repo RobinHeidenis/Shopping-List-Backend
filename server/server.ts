@@ -5,8 +5,6 @@ import { app } from "./index";
 import { Logger } from "./logging/logger";
 import { handle } from "./util/error";
 
-require("express-async-errors");
-
 process.on("unhandledRejection", (error: Error) => {
   throw error;
 });
@@ -23,15 +21,15 @@ export const server = app.listen(config.port, async () => {
   await DBInit();
 });
 
-const httpTerminator = createHttpTerminator({ server });
-
-const shutdownSignals = ["SIGTERM", "SIGINT"];
+export const httpTerminator = createHttpTerminator({ server });
 
 export const shutdownGracefully = async (signal: string): Promise<void> => {
   Logger.info(`${signal} received, closing gracefully ...`);
   await httpTerminator.terminate();
   process.exit();
 };
+
+const shutdownSignals = ["SIGTERM", "SIGINT"];
 
 shutdownSignals.forEach((signal) =>
   process.on(signal, async () => {

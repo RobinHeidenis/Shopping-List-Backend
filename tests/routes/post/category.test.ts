@@ -1,8 +1,10 @@
+import { app, sessionStore } from "../../../server";
 import { sequelize } from "../../../server/db";
 import { seedDatabase } from "../../../server/seeders/seeder";
-import { app, sessionStore } from "../../../server";
 
 const request = require("supertest");
+
+jest.mock("http-terminator");
 
 afterAll(async () => {
   await sequelize.close();
@@ -31,22 +33,22 @@ describe("Category POST endpoint failure", () => {
     const res = await request(app).post("/api/v2/category").send({
       name: "test",
     });
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.statusCode).toEqual(422);
+    expect(res.body).toHaveProperty("errors");
   });
 
   it("should not accept the category creation request, as name is missing", async () => {
     const res = await request(app).post("/api/v2/category").send({
       color: "test",
     });
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.statusCode).toEqual(422);
+    expect(res.body).toHaveProperty("errors");
   });
 
   it("should not accept the category creation request, as multiple properties are missing", async () => {
     const res = await request(app).post("/api/v2/category");
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.statusCode).toEqual(422);
+    expect(res.body).toHaveProperty("errors");
   });
 
   it("should fail to find the category route, as it is not available for POST", async () => {

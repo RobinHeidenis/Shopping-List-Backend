@@ -1,8 +1,10 @@
+import { app, sessionStore } from "../../../server";
 import { sequelize } from "../../../server/db";
 import { seedDatabase } from "../../../server/seeders/seeder";
-import { app, sessionStore } from "../../../server";
 
 const request = require("supertest");
+
+jest.mock("http-terminator");
 
 afterAll(async () => {
   await sequelize.close();
@@ -33,8 +35,8 @@ describe("Standard item POST endpoint failure", () => {
       quantity: "test",
       categoryId: 1,
     });
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.statusCode).toEqual(422);
+    expect(res.body).toHaveProperty("errors");
   });
 
   it("should not accept the standard item creation request, as categoryId is missing", async () => {
@@ -43,8 +45,8 @@ describe("Standard item POST endpoint failure", () => {
       url: "test",
       quantity: "test",
     });
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.statusCode).toEqual(422);
+    expect(res.body).toHaveProperty("errors");
   });
 
   it("should not accept the standard item creation request, as multiple properties are missing", async () => {
@@ -52,8 +54,8 @@ describe("Standard item POST endpoint failure", () => {
       url: "test",
       quantity: "test",
     });
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.statusCode).toEqual(422);
+    expect(res.body).toHaveProperty("errors");
   });
 
   it("should not accept the standard item creation request, as categoryId is not a number", async () => {
@@ -61,8 +63,8 @@ describe("Standard item POST endpoint failure", () => {
       name: "test",
       categoryId: "NotANumber",
     });
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.statusCode).toEqual(422);
+    expect(res.body).toHaveProperty("errors");
   });
 
   it("should return a database failure, as the categoryId provided does not exist", async () => {

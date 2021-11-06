@@ -1,5 +1,8 @@
 import Joi from "joi";
-import { loadConfig } from "./load-config";
+
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const schema = Joi.object()
   .keys({
@@ -10,6 +13,7 @@ const schema = Joi.object()
     DB_IP: Joi.string().required(),
     DB_NAME: Joi.string().required(),
     DB_USERNAME: Joi.string().required(),
+    DB_PASSWORD: Joi.string().required(),
     DB_IP_OLD: Joi.string().ip().required(),
     DB_NAME_OLD: Joi.string().required(),
     DB_USERNAME_OLD: Joi.string().required(),
@@ -21,7 +25,9 @@ const schema = Joi.object()
   })
   .unknown();
 
-const env = loadConfig(schema);
+const { value: env, error } = schema.validate(process.env);
+
+if (error) throw new Error(`Config validation error: ${error.message}`);
 
 export interface EnvConfig {
   env: "development" | "test" | "production";

@@ -1,8 +1,10 @@
-import { sequelize } from "../../../../server/db";
 import { app, sessionStore } from "../../../../server";
+import { sequelize } from "../../../../server/db";
 import { Category } from "../../../../server/models/category.model";
 
 const request = require("supertest");
+
+jest.mock("http-terminator");
 
 afterAll(async () => {
   await sequelize.close();
@@ -15,9 +17,18 @@ beforeEach(async () => {
 
 describe("Category DELETE-all endpoint success", () => {
   it("should successfully delete all categories", async () => {
-    await Category.create({ name: "test1", color: "test" });
-    await Category.create({ name: "test2", color: "test" });
-    await Category.create({ name: "test2", color: "test" });
+    await Category.create({
+      name: "test1",
+      color: "test",
+    });
+    await Category.create({
+      name: "test2",
+      color: "test",
+    });
+    await Category.create({
+      name: "test2",
+      color: "test",
+    });
 
     expect(await Category.count()).toEqual(3);
 
