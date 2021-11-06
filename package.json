@@ -44,7 +44,7 @@
     "sequelize-typescript": "^2.1.0",
     "serverless-mysql": "^1.5.4",
     "ts-node-dev": "^1.1.6",
-    "validator": "^13.6.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.1",
