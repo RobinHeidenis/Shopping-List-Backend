@@ -1,9 +1,11 @@
-import { sequelize } from "../../../server/db";
-import { seedDatabase } from "../../../server/seeders/seeder";
-import { StandardItem } from "../../../server/models/standardItem.model";
 import { app, sessionStore } from "../../../server";
+import { sequelize } from "../../../server/db";
+import { StandardItem } from "../../../server/models/standardItem.model";
+import { seedDatabase } from "../../../server/seeders/seeder";
 
 const request = require("supertest");
+
+jest.mock("http-terminator");
 
 afterAll(async () => {
   await sequelize.close();
@@ -17,7 +19,10 @@ beforeEach(async () => {
 
 describe("Standard item GET endpoint success", () => {
   it("should get the first standard item", async () => {
-    await StandardItem.create({ name: "test", categoryId: 1 });
+    await StandardItem.create({
+      name: "test",
+      categoryId: 1,
+    });
     const res = await request(app).get("/api/v2/standardItem/1");
 
     expect(res.statusCode).toEqual(200);
@@ -37,8 +42,8 @@ describe("Standard item GET endpoint failure", () => {
 
   it("should refuse the request, as id is not a number", async () => {
     const res = await request(app).delete("/api/v2/standardItem/NotANumber");
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.statusCode).toEqual(422);
+    expect(res.body).toHaveProperty("errors");
   });
 
   it("should fail to find the standard item route, as it is not available for GET", async () => {

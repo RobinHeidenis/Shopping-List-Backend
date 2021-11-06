@@ -7,6 +7,7 @@ import { HandledItemInterface } from "../interfaces/item/handledItem.interface";
 import { UpdateSequencesItemInterface } from "../interfaces/item/updateSequencesItem.interface";
 import { Item } from "../models/item.model";
 import { sendSSEMessage } from "./events.controller";
+import isInt = validator.isInt;
 
 export const createOneRequest = async (
   req: Request,
@@ -99,12 +100,12 @@ export const updateSequencesRequest = async (
     return;
   }
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const item of items) {
-    if (
-      validator.isInt(item.id.toString()) &&
-      validator.isInt(item.sequence.toString())
-    ) {
+  if (
+    items.every(
+      (item) => isInt(String(item.id)) && isInt(String(item.sequence))
+    )
+  ) {
+    for (const item of items) {
       // eslint-disable-next-line no-await-in-loop
       await Item.findByPk(item.id)
         .then(async (foundItem) => {
@@ -128,10 +129,10 @@ export const updateSequencesRequest = async (
         .catch((e) => {
           handleDatabaseException(e, res);
         });
-    } else {
-      handleBadRequestException(res);
-      return;
     }
+  } else {
+    handleBadRequestException(res);
+    return;
   }
 
   sendSSEMessage(handledItems, "item.updateSequences", req.session.id);

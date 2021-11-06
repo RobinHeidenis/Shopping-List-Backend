@@ -1,9 +1,11 @@
-import { sequelize } from "../../../server/db";
-import { seedDatabase } from "../../../server/seeders/seeder";
 import { app, sessionStore } from "../../../server";
+import { sequelize } from "../../../server/db";
 import { StandardItem } from "../../../server/models/standardItem.model";
+import { seedDatabase } from "../../../server/seeders/seeder";
 
 const request = require("supertest");
+
+jest.mock("http-terminator");
 
 afterAll(async () => {
   await sequelize.close();
@@ -44,8 +46,8 @@ describe("Standard item DELETE endpoint failure", () => {
 
   it("should refuse the request, as id is not a number", async () => {
     const res = await request(app).delete("/api/v2/standardItem/NotANumber");
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.statusCode).toEqual(422);
+    expect(res.body).toHaveProperty("errors");
   });
 
   it("should fail to find the standard item route, as it is not available for DELETE", async () => {

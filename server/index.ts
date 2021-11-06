@@ -13,12 +13,14 @@ import { itemRouter } from "./routes/item.routes";
 import { searchRouter } from "./routes/search.routes";
 import { standardItemRouter } from "./routes/standardItem.routes";
 
+require("express-async-errors");
+
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const compression = require("compression");
 const session = require("express-session");
 
-const app: Application = express();
+export const app: Application = express();
 
 const MysqlStore = MySqlSessionStore(session);
 
@@ -73,6 +75,5 @@ app.use("/api/v2/authentication", authenticationRouter);
 app.get("/api/health", (req, res) => res.send({ message: "Service OK" }));
 app.use("", deprecatedRoutesRouter);
 
-app.use([notFoundMiddleware, errorMiddleware]);
-
-export { app };
+app.use(notFoundMiddleware);
+app.use(errorMiddleware);

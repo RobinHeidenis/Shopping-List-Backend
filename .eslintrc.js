@@ -38,5 +38,6 @@ module.exports = {
     "import/no-cycle": "off",
     "class-methods-use-this": "off",
     "node/no-unpublished-require": "off",
+    "no-restricted-syntax": "off",
   },
 };

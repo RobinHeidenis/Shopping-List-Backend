@@ -1,8 +1,6 @@
 import { ServerlessMysql } from "serverless-mysql";
 import { config } from "../server/config/env.config";
 
-require("dotenv").config();
-
 const db: ServerlessMysql = require("serverless-mysql")({
   backoff: "decorrelated",
   base: 5,

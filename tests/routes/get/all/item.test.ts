@@ -1,9 +1,11 @@
-import { sequelize } from "../../../../server/db";
 import { app, sessionStore } from "../../../../server";
-import { seedDatabase } from "../../../../server/seeders/seeder";
+import { sequelize } from "../../../../server/db";
 import { Item } from "../../../../server/models/item.model";
+import { seedDatabase } from "../../../../server/seeders/seeder";
 
 const request = require("supertest");
+
+jest.mock("http-terminator");
 
 afterAll(async () => {
   await sequelize.close();

@@ -1,8 +1,10 @@
+import { app, sessionStore } from "../../../server";
 import { sequelize } from "../../../server/db";
 import { seedDatabase } from "../../../server/seeders/seeder";
-import { app, sessionStore } from "../../../server";
 
 const request = require("supertest");
+
+jest.mock("http-terminator");
 
 afterAll(async () => {
   await sequelize.close();
@@ -31,8 +33,8 @@ describe("Category GET endpoint failure", () => {
 
   it("should refuse the request, as id is not a number", async () => {
     const res = await request(app).get("/api/v2/category/NotANumber");
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("error");
+    expect(res.statusCode).toEqual(422);
+    expect(res.body).toHaveProperty("errors");
   });
 
   it("should fail to find the category route, as it is not available for GET", async () => {
