@@ -1,13 +1,10 @@
 import { Request, Response } from "express";
-import validator from "validator";
-import { handleBadRequestException } from "../exceptions/badRequest.exception";
 import { handleDatabaseException } from "../exceptions/database.exception";
 import { handleRecordNotFoundException } from "../exceptions/recordNotFound.exception";
 import { HandledItemInterface } from "../interfaces/item/handledItem.interface";
 import { UpdateSequencesItemInterface } from "../interfaces/item/updateSequencesItem.interface";
 import { Item } from "../models/item.model";
 import { sendSSEMessage } from "./events.controller";
-import isInt = validator.isInt;
 
 export const createOneRequest = async (
   req: Request,
@@ -94,44 +91,30 @@ export const updateSequencesRequest = async (
   const items: [UpdateSequencesItemInterface] = req.body;
   const handledItems: Array<HandledItemInterface> = [];
 
-  if (!Array.isArray(items)) {
-    handleBadRequestException(res);
-    return;
-  }
-
-  if (
-    items.every(
-      (item) => isInt(String(item.id)) && isInt(String(item.sequence))
-    )
-  ) {
-    for (const item of items) {
-      // eslint-disable-next-line no-await-in-loop
-      await Item.findByPk(item.id)
-        .then(async (foundItem) => {
-          if (foundItem) {
-            await foundItem.update({ sequence: item.sequence });
-            handledItems.push({
-              id: foundItem.id,
-              sequence: foundItem.sequence,
-            });
-          } else {
-            handledItems.push({
-              id: item.id,
-              sequence: item.sequence,
-              error: {
-                key: "NOT_FOUND",
-                message: "Item not found",
-              },
-            });
-          }
-        })
-        .catch((e) => {
-          handleDatabaseException(e, res);
-        });
-    }
-  } else {
-    handleBadRequestException(res);
-    return;
+  for (const item of items) {
+    // eslint-disable-next-line no-await-in-loop
+    await Item.findByPk(item.id)
+      .then(async (foundItem) => {
+        if (foundItem) {
+          await foundItem.update({ sequence: item.sequence });
+          handledItems.push({
+            id: foundItem.id,
+            sequence: foundItem.sequence,
+          });
+        } else {
+          handledItems.push({
+            id: item.id,
+            sequence: item.sequence,
+            error: {
+              key: "NOT_FOUND",
+              message: "Item not found",
+            },
+          });
+        }
+      })
+      .catch((e) => {
+        handleDatabaseException(e, res);
+      });
   }
 
   sendSSEMessage(handledItems, "item.updateSequences", req.session.id);

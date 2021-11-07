@@ -13,6 +13,7 @@ import { validate } from "../middlewares/validate.middleware";
 import { idOnlyValidationRules } from "../validators/default.validator";
 import {
   createItemValidationRules,
+  SequencesValidationRules,
   UpdateItemValidationRules,
 } from "../validators/item.validator";
 
@@ -24,7 +25,12 @@ itemRouter.post("/", createItemValidationRules(), validate, createOneRequest);
 
 itemRouter.route("/all").get(readAllRequest).delete(deleteAllRequest);
 
-itemRouter.post("/sequences", updateSequencesRequest);
+itemRouter.post(
+  "/sequences",
+  SequencesValidationRules(),
+  validate,
+  updateSequencesRequest
+);
 
 itemRouter
   .route("/:id")

@@ -1,6 +1,6 @@
 import boom from "@hapi/boom";
 import { NextFunction, Request, Response } from "express";
-import { config } from "../config/env.config";
+import { handle } from "../util/error";
 
 export const errorMiddleware = (
   err: Error,
@@ -8,10 +8,6 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction //eslint-disable-line
 ): void => {
-  if (config.env === "test") {
-    next();
-    return;
-  }
   const {
     output: { payload: error, statusCode },
   } = boom.boomify(err);
@@ -19,6 +15,6 @@ export const errorMiddleware = (
   res.status(statusCode).json({ error });
 
   if (statusCode >= 500) {
-    throw error;
+    handle(err);
   }
 };

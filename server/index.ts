@@ -66,6 +66,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
+app.use(errorMiddleware);
+
 app.use("/api/v2/item", itemRouter);
 app.use("/api/v2/category", categoryRouter);
 app.use("/api/v2/standardItem", standardItemRouter);

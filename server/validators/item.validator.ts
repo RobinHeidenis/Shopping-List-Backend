@@ -82,3 +82,19 @@ export const UpdateItemValidationRules = (): Middleware & {
     ],
     "At least one of the following properties has to exist: 'name', 'quantity', 'url"
   );
+
+export const SequencesValidationRules = (): Array<ValidationChain> => [
+  body().isArray().withMessage("Body should be an array"),
+  body("*.id")
+    .exists()
+    .withMessage("Every array item has to have an 'Id' property")
+    .bail()
+    .isInt()
+    .withMessage("The 'Id' property has to be a number"),
+  body("*.sequence")
+    .exists()
+    .withMessage("Every array item has to have an 'Sequence' property")
+    .bail()
+    .isInt()
+    .withMessage("The 'Sequence' property has to be a number"),
+];
