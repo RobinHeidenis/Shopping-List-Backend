@@ -1,20 +1,9 @@
 import { app } from "../../../../server";
-import { sessionStore } from "../../../../server/config/sessionStore.config";
-import { sequelize } from "../../../../server/db";
 import { seedDatabase } from "../../../../server/seeders/seeder";
 
 const request = require("supertest");
 
 jest.mock("http-terminator");
-
-afterAll(async () => {
-  await sequelize.close();
-  sessionStore.close();
-});
-
-beforeEach(async () => {
-  await sequelize.sync({ force: true });
-});
 
 describe("Category GET-all endpoint success", () => {
   it("should return an empty array, as there are no categories", async () => {

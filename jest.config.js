@@ -10,4 +10,5 @@ module.exports = {
     "server/routes/deprecated.routes.ts",
     "utils/db.ts",
   ],
+  setupFilesAfterEnv: ["./tests/scripts/setup.jest.ts"],
 };
