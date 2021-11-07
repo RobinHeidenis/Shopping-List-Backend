@@ -1,8 +1,7 @@
 import express, { Application } from "express";
-import { SessionOptions } from "express-session";
 import helmet from "helmet";
-import MySqlSessionStore = require("express-mysql-session");
-import { config } from "./config/env.config";
+import { corsOptions } from "./config/cors.config";
+import { sessionOptions } from "./config/sessionOptions.config";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import { notFoundMiddleware } from "./middlewares/notFound.middleware";
 import { authenticationRouter } from "./routes/authentication.routes";
@@ -22,43 +21,7 @@ const session = require("express-session");
 
 export const app: Application = express();
 
-const MysqlStore = MySqlSessionStore(session);
-
-const sessionStoreOptions: MySqlSessionStore.Options = {
-  host: config.db.ip,
-  port: 3306,
-  user: config.db.username,
-  password: config.db.password,
-  database: "sessions",
-  createDatabaseTable: true,
-};
-
-export const sessionStore = new MysqlStore(sessionStoreOptions);
-
-const sessionOptions: SessionOptions = {
-  secret: config.tokens.access || "",
-  store: sessionStore,
-  resave: false,
-  cookie: {
-    secure: false,
-  },
-  saveUninitialized: true,
-  name: "sessionId",
-};
-
-if (app.get("env") === "production") {
-  app.set("trust proxy", 1);
-  if (sessionOptions && sessionOptions.cookie) {
-    sessionOptions.cookie.secure = true;
-  }
-}
-
 app.use(session(sessionOptions));
-
-const corsOptions = {
-  origin: "*",
-};
-
 app.use(compression());
 app.use(helmet());
 app.use(express.json());

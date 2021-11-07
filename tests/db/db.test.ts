@@ -1,6 +1,6 @@
+import { sessionStore } from "../../server/config/sessionStore.config";
 import { DBInit, sequelize } from "../../server/db";
 import { Category } from "../../server/models/category.model";
-import { sessionStore } from "../../server";
 
 afterAll(async () => {
   await sequelize.close();

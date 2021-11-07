@@ -1,4 +1,5 @@
-import { app, sessionStore } from "../../../server";
+import { app } from "../../../server";
+import { sessionStore } from "../../../server/config/sessionStore.config";
 import { sequelize } from "../../../server/db";
 import { seedDatabase } from "../../../server/seeders/seeder";
 
