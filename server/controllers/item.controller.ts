@@ -3,6 +3,7 @@ import { handleDatabaseException } from "../exceptions/database.exception";
 import { handleRecordNotFoundException } from "../exceptions/recordNotFound.exception";
 import { HandledItemInterface } from "../interfaces/item/handledItem.interface";
 import { UpdateSequencesItemInterface } from "../interfaces/item/updateSequencesItem.interface";
+import { Category } from "../models/category.model";
 import { Item } from "../models/item.model";
 import { sendSSEMessage } from "./events.controller";
 
@@ -11,6 +12,15 @@ export const createOneRequest = async (
   res: Response
 ): Promise<void> => {
   const { name, quantity, url, categoryId } = req.body;
+
+  const foundCategory = await Category.findByPk(categoryId).catch((e) =>
+    handleDatabaseException(e, res)
+  );
+
+  if (!foundCategory) {
+    handleRecordNotFoundException(res);
+    return;
+  }
 
   const numItems: number = await Item.max("sequence");
 

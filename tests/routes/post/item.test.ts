@@ -60,15 +60,6 @@ describe("Item POST endpoint failure", () => {
     expect(res.body).toHaveProperty("errors");
   });
 
-  it("should return a database failure, as the categoryId provided does not exist", async () => {
-    const res = await request(app).post("/api/v2/item").send({
-      name: "test",
-      categoryId: 3,
-    });
-    expect(res.statusCode).toEqual(500);
-    expect(res.body).toHaveProperty("error");
-  });
-
   it("should fail to find the item route, as it is not available for POST", async () => {
     const res = await request(app).post("/api/v2/item/1");
     expect(res.statusCode).toEqual(404);
