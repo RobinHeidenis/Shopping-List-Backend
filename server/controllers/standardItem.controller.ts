@@ -2,12 +2,20 @@ import { Request, Response } from "express";
 import { handleBadRequestException } from "../exceptions/badRequest.exception";
 import { handleDatabaseException } from "../exceptions/database.exception";
 import { handleRecordNotFoundException } from "../exceptions/recordNotFound.exception";
+import { Category } from "../models/category.model";
 import { StandardItem } from "../models/standardItem.model";
 import { sendSSEMessage } from "./events.controller";
 
 const createOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { name, quantity, url, categoryId } = req.body;
-  // TODO: check if category exists, also do this with item.controller.ts
+
+  const foundCategory = await Category.findByPk(categoryId).catch((e) =>
+    handleDatabaseException(e, res)
+  );
+
+  if (!foundCategory) {
+    handleRecordNotFoundException(res);
+  }
 
   StandardItem.create({
     name,
