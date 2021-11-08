@@ -1,22 +1,10 @@
 import { Sequelize } from "sequelize-typescript";
-import { config } from "./config/env.config";
+import { sequelizeOptions } from "./config/sequelize.config";
 import { Logger } from "./logging/logger";
 import { Category } from "./models/category.model";
 import { seedDatabase } from "./seeders/seeder";
 
-export const sequelize = new Sequelize({
-  dialect: "mysql",
-  host: config.db.ip,
-  database: config.env === "test" ? "shoppinglist_test" : config.db.name,
-  port: config.env === "test" ? 3305 : 3306,
-  username: config.db.username,
-  password: config.db.password,
-  models: [`${__dirname}/models`],
-  modelMatch: (filename, member) =>
-    filename.substring(0, filename.indexOf(".model")).toLowerCase() ===
-    member.toLowerCase(),
-  logging: config.env === "test" ? false : Logger.query,
-});
+export const sequelize = new Sequelize(sequelizeOptions);
 
 export async function DBInit(): Promise<void> {
   await sequelize.authenticate().catch((e) => {
