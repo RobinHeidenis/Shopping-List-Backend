@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { handleBadRequestException } from "../exceptions/badRequest.exception";
 import { handleDatabaseException } from "../exceptions/database.exception";
 import { handleRecordNotFoundException } from "../exceptions/recordNotFound.exception";
 import { Category } from "../models/category.model";
@@ -77,11 +76,6 @@ const updateOneRequest = async (req: Request, res: Response): Promise<void> => {
 
 const deleteOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
-
-  if (!id || !parseInt(id)) {
-    handleBadRequestException(res);
-    return;
-  }
 
   const foundStandardItem = await StandardItem.findByPk(id).catch((e) =>
     handleDatabaseException(e, res)

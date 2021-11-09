@@ -5,19 +5,19 @@ import { Middleware } from "express-validator/src/base";
 export const createCategoryValidationRules = (): Array<ValidationChain> => [
   body("name")
     .exists()
-    .withMessage("Name is required")
+    .withMessage("Property 'name' is required")
     .bail()
     .notEmpty()
-    .withMessage("Name cannot be empty")
+    .withMessage("Property 'name' cannot be empty")
     .bail()
     .isAlphanumeric()
-    .withMessage("Name has to be alphanumeric"),
+    .withMessage("Property 'name' has to be alphanumeric"),
   body("color")
     .exists()
-    .withMessage("Color is required")
+    .withMessage("Property 'color' is required")
     .bail()
     .isHexColor()
-    .withMessage("Name has to be a hex color"),
+    .withMessage("Property 'color' has to be in the format of a hex color"),
 ];
 
 export const updateCategoryValidationRules = (): Middleware & {
@@ -29,15 +29,15 @@ export const updateCategoryValidationRules = (): Middleware & {
         .exists()
         .bail()
         .notEmpty()
-        .withMessage("Name cannot be empty")
+        .withMessage("Property 'name' cannot be empty")
         .bail()
         .isAlphanumeric()
-        .withMessage("Name has to be alphanumeric"),
+        .withMessage("Property 'name' has to be alphanumeric"),
       body("color")
         .exists()
         .bail()
         .isHexColor()
-        .withMessage("Name has to be a hex color"),
+        .withMessage("Property 'color' has to be in the format of a hex color"),
     ],
     "At least one of the following properties has to exist: 'name', 'color'"
   );

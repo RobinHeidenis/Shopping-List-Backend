@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { Response as fetchResponse } from "node-fetch";
-import { handleBadRequestException } from "../exceptions/badRequest.exception";
 import { handleInvalidCredentialsException } from "../exceptions/invalidCredentials.exception";
 import { Logger } from "../logging/logger";
 
@@ -8,11 +7,6 @@ const fetch = require("node-fetch");
 
 const login = async (req: Request, res: Response): Promise<void> => {
   const { username, password } = req.body;
-
-  if (!username || !password) {
-    handleBadRequestException(res);
-    return;
-  }
 
   await fetch("http://localhost:3002/login", {
     method: "POST",
