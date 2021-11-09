@@ -27,7 +27,7 @@ describe("Category POST endpoint failure", () => {
       name: "test",
     });
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not accept the category creation request, as name is missing", async () => {
@@ -35,13 +35,13 @@ describe("Category POST endpoint failure", () => {
       color: "test",
     });
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not accept the category creation request, as multiple properties are missing", async () => {
     const res = await request(app).post("/api/v2/category");
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should fail to find the category route, as it is not available for POST", async () => {

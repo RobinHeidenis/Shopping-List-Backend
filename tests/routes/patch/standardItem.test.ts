@@ -75,7 +75,7 @@ describe("Standard item PATCH endpoint failure", () => {
   it("should refuse the standard item 1 update request because there are no properties to update", async () => {
     const res = await request(app).patch("/api/v2/standardItem/1");
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not find the category with the provided id", async () => {
@@ -91,7 +91,7 @@ describe("Standard item PATCH endpoint failure", () => {
   it("should refuse the request, as id is not a number", async () => {
     const res = await request(app).patch("/api/v2/standardItem/NotANumber");
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should fail to find the standard item route, as it is not available for PATCH", async () => {

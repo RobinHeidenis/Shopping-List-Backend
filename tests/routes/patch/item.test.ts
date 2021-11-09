@@ -99,7 +99,7 @@ describe("Item PATCH endpoint failure", () => {
   it("should refuse the item 1 update request because there are no properties to update", async () => {
     const res = await request(app).patch("/api/v2/item/1");
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not find the item with the provided id", async () => {
@@ -116,7 +116,7 @@ describe("Item PATCH endpoint failure", () => {
   it("should refuse the request, as id is not a number", async () => {
     const res = await request(app).patch("/api/v2/item/NotANumber");
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should fail to find the item route, as it is not available for PATCH", async () => {
