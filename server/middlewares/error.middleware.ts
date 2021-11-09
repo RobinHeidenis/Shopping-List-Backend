@@ -9,10 +9,16 @@ export const errorMiddleware = (
   next: NextFunction //eslint-disable-line
 ): void => {
   const {
-    output: { payload: error, statusCode },
+    output: {
+      statusCode,
+      payload: { error, message },
+    },
   } = boom.boomify(err);
 
-  res.status(statusCode).json({ error });
+  res.status(statusCode).json({
+    error,
+    message,
+  });
 
   if (statusCode >= 500) {
     handle(err);

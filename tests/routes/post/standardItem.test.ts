@@ -29,7 +29,7 @@ describe("Standard item POST endpoint failure", () => {
       categoryId: 1,
     });
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not accept the standard item creation request, as categoryId is missing", async () => {
@@ -39,7 +39,7 @@ describe("Standard item POST endpoint failure", () => {
       quantity: "test",
     });
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not accept the standard item creation request, as multiple properties are missing", async () => {
@@ -48,7 +48,7 @@ describe("Standard item POST endpoint failure", () => {
       quantity: "test",
     });
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not accept the standard item creation request, as categoryId is not a number", async () => {
@@ -57,7 +57,7 @@ describe("Standard item POST endpoint failure", () => {
       categoryId: "NotANumber",
     });
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should fail to find the standard item route, as it is not available for POST", async () => {

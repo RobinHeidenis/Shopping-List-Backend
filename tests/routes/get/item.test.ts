@@ -37,7 +37,7 @@ describe("Item GET endpoint failure", () => {
   it("should refuse the request, as id is not a number", async () => {
     const res = await request(app).delete("/api/v2/item/NotANumber");
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should fail to find the item route, as it is not available for GET", async () => {

@@ -30,7 +30,7 @@ describe("Category DELETE endpoint failure", () => {
   it("should refuse the request, as id is not a number", async () => {
     const res = await request(app).delete("/api/v2/category/NotANumber");
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should fail to find the category route, as it is not available for DELETE", async () => {

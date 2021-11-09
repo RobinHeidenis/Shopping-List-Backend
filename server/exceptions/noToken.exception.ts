@@ -1,9 +1,15 @@
+import boom from "@hapi/boom";
 import { Response } from "express";
 
 export const handleNoTokenException = (res: Response): void => {
-  res.status(400).json({
-    error: true,
-    key: "NO_TOKEN",
-    message: "No bearer token has been sent with the request",
+  const {
+    output: {
+      statusCode,
+      payload: { error, message },
+    },
+  } = boom.badRequest("No bearer token was sent with the request");
+  res.status(statusCode).json({
+    error,
+    message,
   });
 };

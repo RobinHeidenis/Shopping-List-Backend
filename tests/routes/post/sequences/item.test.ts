@@ -155,13 +155,13 @@ describe("Item POST endpoint failure", () => {
       sequence: 3,
     });
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not accept the request, as nothing is sent", async () => {
     const res = await request(app).post("/api/v2/item/sequences");
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not accept the request, as one of the objects is missing the sequence property", async () => {
@@ -169,7 +169,7 @@ describe("Item POST endpoint failure", () => {
       .post("/api/v2/item/sequences")
       .send([{ id: 1 }]);
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not accept the request, as one of the objects is missing the id property", async () => {
@@ -177,6 +177,6 @@ describe("Item POST endpoint failure", () => {
       .post("/api/v2/item/sequences")
       .send([{ sequence: 1 }]);
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 });

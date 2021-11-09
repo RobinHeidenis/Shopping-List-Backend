@@ -49,7 +49,7 @@ describe("Category PATCH endpoint failure", () => {
   it("should refuse the category 1 update request because there are no properties to update", async () => {
     const res = await request(app).patch("/api/v2/category/1");
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should not find the category with the provided id", async () => {
@@ -64,7 +64,7 @@ describe("Category PATCH endpoint failure", () => {
   it("should refuse the request, as id is not a number", async () => {
     const res = await request(app).patch("/api/v2/category/NotANumber");
     expect(res.statusCode).toEqual(422);
-    expect(res.body).toHaveProperty("errors");
+    expect(res.body).toHaveProperty("data.errors");
   });
 
   it("should fail to find the category route, as it is not available for PATCH", async () => {
