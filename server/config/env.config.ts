@@ -20,8 +20,6 @@ const schema = Joi.object()
     DB_PASSWORD_OLD: Joi.string().required(),
     accessTokenSecret: Joi.string().required(),
     refreshTokenSecret: Joi.string().required(),
-    TEST_LOGIN_USERNAME: Joi.string().required(),
-    TEST_LOGIN_PASSWORD: Joi.string().required(),
   })
   .unknown();
 
@@ -48,10 +46,6 @@ export interface EnvConfig {
     access: string;
     refresh: string;
   };
-  test: {
-    username: string;
-    password: string;
-  };
 }
 
 export const config: EnvConfig = {
@@ -75,9 +69,5 @@ export const config: EnvConfig = {
   tokens: {
     access: env.accessTokenSecret,
     refresh: env.refreshTokenSecret,
-  },
-  test: {
-    username: env.TEST_LOGIN_USERNAME,
-    password: env.TEST_LOGIN_PASSWORD,
   },
 };

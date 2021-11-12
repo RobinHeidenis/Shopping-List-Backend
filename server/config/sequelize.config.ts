@@ -6,7 +6,7 @@ export const sequelizeOptions: SequelizeOptions = {
   dialect: "mysql",
   host: config.db.ip,
   database: config.env === "test" ? "shoppinglist_test" : config.db.name,
-  port: config.env === "test" ? 3305 : 3306,
+  port: 3306,
   username: config.db.username,
   password: config.db.password,
   models: [`${__dirname}/../models`],
