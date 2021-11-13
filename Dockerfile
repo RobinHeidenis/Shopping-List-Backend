@@ -1,13 +1,15 @@
-FROM node:14
+FROM node:17
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json ./
+COPY yarn.lock ./
+COPY build ./
+COPY .env.production ./.env
+COPY ./docker/wait-for ./
 
-RUN npm install
+RUN yarn install --production
 
-COPY . .
+RUN apt-get -q update && apt-get -qy install netcat
 
 EXPOSE 3001
-
-ENTRYPOINT npm run server

@@ -12,6 +12,14 @@ export async function DBInit(): Promise<void> {
     process.kill(process.pid, "SIGTERM");
   });
 
+  try {
+    await Category.count();
+  } catch {
+    await sequelize.sync({ force: true });
+    await DBInit();
+    return;
+  }
+
   const categoryCount = await Category.count().catch((e) => {
     Logger.error(e);
     sequelize.sync({ force: true });

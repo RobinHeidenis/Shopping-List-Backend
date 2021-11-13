@@ -11,6 +11,12 @@ services:
       MYSQL_DATABASE: shoppinglist
     ports:
       - "3306:3306"
+    volumes:
+      - "./docker/mysql:/docker-entrypoint-initdb.d"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
 
   backend:
     restart: always
@@ -18,5 +24,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    command: sh -c './wait-for db:3306 -- node ./server/server.js --unhandled-rejections=strict'
+    depends_on:
+      - db
     ports:
       - "3001:3001"

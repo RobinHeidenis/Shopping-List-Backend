@@ -1,5 +1,4 @@
 import { SessionOptions } from "express-session";
-import { app } from "../index";
 import { config } from "./env.config";
 import { sessionStore } from "./sessionStore.config";
 
@@ -15,7 +14,6 @@ export const sessionOptions: SessionOptions = {
 };
 
 if (config.env === "production") {
-  app.set("trust proxy", 1);
   if (sessionOptions && sessionOptions.cookie) {
     sessionOptions.cookie.secure = true;
   }

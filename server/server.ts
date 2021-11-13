@@ -21,6 +21,8 @@ export const server = app.listen(config.port, async () => {
   await DBInit();
 });
 
+if (config.env === "production") app.set("trust proxy", 1);
+
 export const httpTerminator = createHttpTerminator({ server });
 
 export const shutdownGracefully = async (signal: string): Promise<void> => {
