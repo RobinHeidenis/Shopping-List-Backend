@@ -165,3 +165,51 @@ export const deleteAllRequest = async (
     })
     .catch((e) => handleDatabaseException(e, res));
 };
+
+export const deleteCheckedRequest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  await Item.destroy({ where: { status: 2 } })
+    .then(() => {
+      sendSSEMessage("", "item.deleteChecked", req.session.id);
+      res.sendStatus(204);
+    })
+    .catch((e) => handleDatabaseException(e, res));
+};
+
+export const checkRequest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+  const foundItem = await Item.findByPk(id);
+
+  if (!foundItem) {
+    handleRecordNotFoundException(res);
+    return;
+  }
+
+  await foundItem.update({ status: 2 });
+
+  sendSSEMessage(foundItem, "item.update", req.session.id);
+  res.status(200).json(foundItem);
+};
+
+export const uncheckRequest = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+  const foundItem = await Item.findByPk(id);
+
+  if (!foundItem) {
+    handleRecordNotFoundException(res);
+    return;
+  }
+
+  await foundItem.update({ status: 1 });
+
+  sendSSEMessage(foundItem, "item.update", req.session.id);
+  res.status(200).json(foundItem);
+};

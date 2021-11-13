@@ -1,10 +1,13 @@
 import express from "express";
 import {
+  checkRequest,
   createOneRequest,
   deleteAllRequest,
+  deleteCheckedRequest,
   deleteOneRequest,
   readAllRequest,
   readOneRequest,
+  uncheckRequest,
   updateOneRequest,
   updateSequencesRequest,
 } from "../controllers/item.controller";
@@ -30,6 +33,17 @@ itemRouter.post(
   SequencesValidationRules(),
   validate,
   updateSequencesRequest
+);
+
+itemRouter.delete("/checked", deleteCheckedRequest);
+
+itemRouter.patch("/:id/check", idOnlyValidationRules(), validate, checkRequest);
+
+itemRouter.patch(
+  "/:id/uncheck",
+  idOnlyValidationRules(),
+  validate,
+  uncheckRequest
 );
 
 itemRouter

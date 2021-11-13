@@ -8,6 +8,7 @@ export type EventType =
   | "item.updateSequences"
   | "item.delete"
   | "item.deleteAll"
+  | "item.deleteChecked"
   | "standardItem.create"
   | "standardItem.update"
   | "standardItem.delete"
