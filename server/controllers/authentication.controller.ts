@@ -8,7 +8,7 @@ const fetch = require("node-fetch");
 const login = async (req: Request, res: Response): Promise<void> => {
   const { username, password } = req.body;
 
-  await fetch("http://localhost:3002/login", {
+  await fetch("http://auth:3002/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

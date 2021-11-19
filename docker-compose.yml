@@ -24,8 +24,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    command: sh -c './wait-for db:3306 -- node ./server/server.js --unhandled-rejections=strict'
     depends_on:
       - db
     ports:
       - "3001:3001"
+    network_mode: host
