@@ -15,19 +15,14 @@ COPY ./package.json ./yarn.lock ./
 
 RUN yarn install --production
 
-FROM node:17.1.0-alpine3.14
+FROM node:17.1.0-alpine
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node --from=build /usr/src/app/build ./build
-COPY --chown=node:node --from=modules /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node ./docker/wait-for .
-COPY --chown=node:node .env.production ./.env
-RUN apk add netcat-openbsd
-RUN apk add dumb-init
-
-USER node
+COPY --from=build /usr/src/app/build ./build
+COPY --from=modules /usr/src/app/node_modules ./node_modules
+COPY .env.production ./.env
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "node build/server/server.js --unhandled-rejections=strict"]
+CMD ["node", "build/server/server.js"]
