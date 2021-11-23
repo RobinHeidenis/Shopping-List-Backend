@@ -15,7 +15,7 @@ COPY ./package.json ./yarn.lock ./
 
 RUN yarn install --production
 
-FROM node:17.1.0-alpine
+FROM node:17.1.0-alpine3.12@sha256:9dd79d902bfc8d0fc956527a9c41e2a0a70b452e97c13de27a5248bfa5341bc0
 
 WORKDIR /usr/src/app
 
