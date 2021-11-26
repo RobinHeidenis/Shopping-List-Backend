@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/node14",
+  "extends": "@tsconfig/node16",
   "compilerOptions": {
     "target": "ES6",
     "experimentalDecorators": true,
@@ -13,6 +13,15 @@
     "strictPropertyInitialization": false,
     "outDir": "build"
   },
-  "exclude": ["node_modules", "dist"],
-  "include": ["./**/*.ts", "./**/*.js", "*.ts", "*.js", ".eslintrc.js"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "include": [
+    "./**/*.ts",
+    "./**/*.js",
+    "*.ts",
+    "*.js",
+    ".eslintrc.js"
+  ]
 }
