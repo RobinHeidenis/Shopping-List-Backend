@@ -53,7 +53,7 @@ urlRoutes.get("/events", sse.init);
  * @deprecated since version 2.0.0
  */
 urlRoutes.post("/api/login", (req, res) => {
-  fetch("http://localhost:3002/login", {
+  fetch(config.authServerBaseUrl + "/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
