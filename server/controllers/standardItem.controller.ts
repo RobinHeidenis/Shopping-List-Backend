@@ -22,7 +22,10 @@ const createOneRequest = async (req: Request, res: Response): Promise<void> => {
     url,
     categoryId,
   })
-    .then((standardItem) => {
+    .then(async ({ id }) => {
+      const standardItem = await StandardItem.findByPk(id, {
+        include: { model: Category },
+      });
       sendSSEMessage(standardItem, "standardItem.create", req.session.id);
       res.status(201).json(standardItem);
     })
@@ -32,9 +35,9 @@ const createOneRequest = async (req: Request, res: Response): Promise<void> => {
 const readOneRequest = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
-  const foundStandardItem = await StandardItem.findByPk(id).catch((e) =>
-    handleDatabaseException(e, res)
-  );
+  const foundStandardItem = await StandardItem.findByPk(id, {
+    include: { model: Category },
+  }).catch((e) => handleDatabaseException(e, res));
 
   if (foundStandardItem) {
     res.status(200).json(foundStandardItem);

@@ -8,6 +8,7 @@ export const sessionOptions: SessionOptions = {
   resave: false,
   cookie: {
     secure: false,
+    httpOnly: false,
   },
   saveUninitialized: true,
   name: "sessionId",

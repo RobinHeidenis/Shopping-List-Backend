@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Response as fetchResponse } from "node-fetch";
+import { config } from "../config/env.config";
 import { handleInvalidCredentialsException } from "../exceptions/invalidCredentials.exception";
 import { Logger } from "../logging/logger";
 
@@ -8,7 +9,7 @@ const fetch = require("node-fetch");
 const login = async (req: Request, res: Response): Promise<void> => {
   const { username, password } = req.body;
 
-  await fetch("http://auth:3002/login", {
+  await fetch(`${config.authServerBaseUrl}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

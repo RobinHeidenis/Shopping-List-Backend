@@ -20,6 +20,7 @@ const schema = Joi.object()
     DB_PASSWORD_OLD: Joi.string().required(),
     accessTokenSecret: Joi.string().required(),
     refreshTokenSecret: Joi.string().required(),
+    authServerBaseUrl: Joi.string().uri().required(),
   })
   .unknown();
 
@@ -46,6 +47,7 @@ export interface EnvConfig {
     access: string;
     refresh: string;
   };
+  authServerBaseUrl: string;
 }
 
 export const config: EnvConfig = {
@@ -70,4 +72,5 @@ export const config: EnvConfig = {
     access: env.accessTokenSecret,
     refresh: env.refreshTokenSecret,
   },
+  authServerBaseUrl: env.authServerBaseUrl,
 };
