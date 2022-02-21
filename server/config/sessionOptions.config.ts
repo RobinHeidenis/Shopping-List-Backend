@@ -14,8 +14,8 @@ export const sessionOptions: SessionOptions = {
   name: "sessionId",
 };
 
-if (config.env === "production") {
-  if (sessionOptions && sessionOptions.cookie) {
-    sessionOptions.cookie.secure = true;
-  }
-}
+//if (config.env === "production") {
+//  if (sessionOptions && sessionOptions.cookie) {
+//    sessionOptions.cookie.secure = true;
+//  }
+//}
