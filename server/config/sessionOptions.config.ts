@@ -13,9 +13,3 @@ export const sessionOptions: SessionOptions = {
   saveUninitialized: true,
   name: "sessionId",
 };
-
-//if (config.env === "production") {
-//  if (sessionOptions && sessionOptions.cookie) {
-//    sessionOptions.cookie.secure = true;
-//  }
-//}

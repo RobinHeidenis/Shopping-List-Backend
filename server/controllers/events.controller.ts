@@ -4,6 +4,7 @@ import { EventType } from "../interfaces/events/events.interface";
 const connectedClients = new Map();
 
 const events = (req: Request, res: Response): void => {
+  return;
   if (connectedClients.has(req.session.id)) {
     connectedClients.get(req.session.id).end();
   }
